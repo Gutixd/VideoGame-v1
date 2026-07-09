@@ -33,7 +33,7 @@ func _physics_process(delta):
 	move_and_slide()
 
 func _handle_movement(delta):
-	var input_dir = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 
 	if direction:
@@ -68,7 +68,7 @@ func _handle_camera_bob(delta):
 	camera.position = camera_base_pos + Vector3(0, bob_offset, 0)
 
 func _handle_flashlight_toggle():
-	if Input.is_action_just_pressed("ui_focus_next"):  # F key
+	if Input.is_action_just_pressed("toggle_flashlight"):  # F key
 		if flashlight_battery > 0:
 			flashlight_active = !flashlight_active
 			flashlight.visible = flashlight_active
@@ -77,7 +77,7 @@ func _handle_flashlight_toggle():
 			flashlight.visible = false
 
 func _handle_interaction():
-	if Input.is_action_just_pressed("ui_accept"):  # E key / click
+	if Input.is_action_just_pressed("interact"):  # E key
 		var space_state = get_world_3d().direct_space_state
 		var query = PhysicsRayQueryParameters3D.create(
 			camera.global_position,

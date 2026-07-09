@@ -28,6 +28,21 @@ reales muestran:
   - Franja de luz naranja a lo largo de la via (indicador real)
 Ver referencias_fotograficas/ para las fotos que motivaron este cambio.
 
+CORRECCION v3 (topologia de anden -- foto real de tren + andenes):
+La v1/v2 modelaban un ANDEN UNICO CENTRAL con una via a cada lado
+(isla). Una foto real muestra claramente lo contrario: DOS ANDENES
+LATERALES separados, cada uno sirviendo un sentido opuesto, con
+AMBAS VIAS juntas en el medio (sin plataforma entre ellas). Para
+cambiar de sentido los pasajeros suben por una escalera distinta
+para cada anden (no hay cruce a nivel de piso).
+
+Se mantiene Anden_A exactamente en su posicion original (X centrado
+en 0) para NO romper la conexion ya construida con el Hall (la
+escalera del Hall llega a Anden_A sin cambios). Las vias y el
+segundo anden (Anden_B) se agregan hacia el Este (X positivo).
+Anden_B es explorable pero no es parte del camino critico del
+jugador en esta v1 del nivel -- ver seccion de gameplay.
+
 Convencion de coordenadas (igual que scripts anteriores):
     X_doc = Este / Oeste       -> Blender X
     Y_doc = Altura (up)        -> Blender Z
@@ -44,7 +59,6 @@ import os
 
 ANCHO_ANDEN = 7.0
 ANCHO_VIA = 3.5
-ANCHO_TOTAL = ANCHO_ANDEN + 2 * ANCHO_VIA          # 14.0 m
 LARGO_ESTACION = 100.0
 ALTURA_ARRANQUE = 4.3
 ALTURA_TECHO = 5.0                                 # techo de vigas, mas bajo que la boveda v1
@@ -54,9 +68,22 @@ GALGA = 0.7175
 
 MEDIO_LARGO = LARGO_ESTACION / 2.0
 MEDIO_ANDEN = ANCHO_ANDEN / 2.0
-X_VIA_OESTE = -(MEDIO_ANDEN + ANCHO_VIA / 2.0)
-X_VIA_ESTE = (MEDIO_ANDEN + ANCHO_VIA / 2.0)
-X_MURO_LATERAL = ANCHO_TOTAL / 2.0
+
+# --- Topologia v3: dos andenes laterales, vias juntas en el medio ------
+# Anden_A se mantiene centrado en X=0 (posicion original) para no romper
+# la conexion ya construida con el Hall. Vias y Anden_B se agregan al Este.
+X_ANDEN_A_CENTRO = 0.0
+X_MURO_OESTE_ANDEN_A = X_ANDEN_A_CENTRO - MEDIO_ANDEN              # -3.5
+
+X_VIA1_INICIO = X_ANDEN_A_CENTRO + MEDIO_ANDEN                     # 3.5
+X_VIA1_CENTRO = X_VIA1_INICIO + ANCHO_VIA / 2.0                    # 5.25
+X_VIA2_INICIO = X_VIA1_INICIO + ANCHO_VIA                          # 7.0
+X_VIA2_CENTRO = X_VIA2_INICIO + ANCHO_VIA / 2.0                    # 8.75
+X_ANDEN_B_INICIO = X_VIA2_INICIO + ANCHO_VIA                       # 10.5
+X_ANDEN_B_CENTRO = X_ANDEN_B_INICIO + MEDIO_ANDEN                  # 14.0
+X_MURO_ESTE_ANDEN_B = X_ANDEN_B_INICIO + ANCHO_ANDEN               # 17.5
+
+ANCHO_TOTAL = X_MURO_ESTE_ANDEN_B - X_MURO_OESTE_ANDEN_A           # 21.0 m
 
 MARGEN_COLUMNAS = 2.0
 _z = -(MEDIO_LARGO - MARGEN_COLUMNAS)
@@ -454,90 +481,120 @@ def generar():
     mat_cartel_texto = crear_material_simple("Cartel_Texto", (1.0, 1.0, 1.0),
                                               emission=(1.0, 1.0, 1.0), emission_strength=0.5)
 
-    # --- Piso -----------------------------------------------------------
-    crear_caja("Piso_Anden", col_arquitectura,
-               pos_doc=(0, 0, 0), size_doc=(ANCHO_ANDEN, 0.2, LARGO_ESTACION), material=mat_piso_manchas)
+    # --- Piso: Anden_A (posicion original, sin cambios) + Anden_B (nuevo) ---
+    crear_caja("Piso_Anden_A", col_arquitectura,
+               pos_doc=(X_ANDEN_A_CENTRO, 0, 0), size_doc=(ANCHO_ANDEN, 0.2, LARGO_ESTACION),
+               material=mat_piso_manchas)
+    crear_caja("Piso_Anden_B", col_arquitectura,
+               pos_doc=(X_ANDEN_B_CENTRO, 0, 0), size_doc=(ANCHO_ANDEN, 0.2, LARGO_ESTACION),
+               material=mat_piso_manchas)
 
-    crear_caja("Franja_Tactil_Oeste", col_senaletica,
-               pos_doc=(-3.3, 0.01, 0), size_doc=(0.3, 0.02, LARGO_ESTACION), material=mat_franja_tactil)
-    crear_caja("Franja_Tactil_Este", col_senaletica,
-               pos_doc=(3.3, 0.01, 0), size_doc=(0.3, 0.02, LARGO_ESTACION), material=mat_franja_tactil)
+    # Franja tactil: cada anden solo tiene un borde (el que da a su via)
+    crear_caja("Franja_Tactil_AndenA", col_senaletica,
+               pos_doc=(X_VIA1_INICIO - 0.2, 0.01, 0), size_doc=(0.3, 0.02, LARGO_ESTACION),
+               material=mat_franja_tactil)
+    crear_caja("Franja_Tactil_AndenB", col_senaletica,
+               pos_doc=(X_ANDEN_B_INICIO + 0.2, 0.01, 0), size_doc=(0.3, 0.02, LARGO_ESTACION),
+               material=mat_franja_tactil)
 
-    # --- Muros de cierre ---------------------------------------------------
+    # --- Muros de cierre -----------------------------------------------------
     crear_caja("Muro_Norte", col_arquitectura,
-               pos_doc=(0, 2.15, -MEDIO_LARGO), size_doc=(ANCHO_TOTAL, ALTURA_ARRANQUE, 0.5),
-               material=mat_hormigon_muro_cierre)
+               pos_doc=((X_MURO_OESTE_ANDEN_A + X_MURO_ESTE_ANDEN_B) / 2, 2.15, -MEDIO_LARGO),
+               size_doc=(ANCHO_TOTAL, ALTURA_ARRANQUE, 0.5), material=mat_hormigon_muro_cierre)
 
-    crear_caja("Muro_Sur", col_arquitectura,
-               pos_doc=(0, 2.15, MEDIO_LARGO), size_doc=(ANCHO_ANDEN, ALTURA_ARRANQUE, 0.5),
+    # Muro sur: cierra cada anden por separado, dejando abierto el tramo de
+    # las vias (Via1 transitable hacia el tunel, Via2 sellada con reja)
+    crear_caja("Muro_Sur_AndenA", col_arquitectura,
+               pos_doc=(X_ANDEN_A_CENTRO, 2.15, MEDIO_LARGO), size_doc=(ANCHO_ANDEN, ALTURA_ARRANQUE, 0.5),
+               material=mat_hormigon_muro_cierre)
+    crear_caja("Muro_Sur_AndenB", col_arquitectura,
+               pos_doc=(X_ANDEN_B_CENTRO, 2.15, MEDIO_LARGO), size_doc=(ANCHO_ANDEN, ALTURA_ARRANQUE, 0.5),
                material=mat_hormigon_muro_cierre)
 
     # --- Muros laterales largos: ladrillo/terracota uniforme (corregido) ---
-    for lado, x in (("Oeste", -X_MURO_LATERAL), ("Este", X_MURO_LATERAL)):
-        crear_caja(f"Muro_Lateral_{lado}", col_arquitectura,
-                   pos_doc=(x, ALTURA_ARRANQUE / 2, 0),
-                   size_doc=(0.4, ALTURA_ARRANQUE, LARGO_ESTACION), material=mat_muro_ladrillo)
+    crear_caja("Muro_Lateral_AndenA_Exterior", col_arquitectura,
+               pos_doc=(X_MURO_OESTE_ANDEN_A, ALTURA_ARRANQUE / 2, 0),
+               size_doc=(0.4, ALTURA_ARRANQUE, LARGO_ESTACION), material=mat_muro_ladrillo)
+    crear_caja("Muro_Lateral_AndenB_Exterior", col_arquitectura,
+               pos_doc=(X_MURO_ESTE_ANDEN_B, ALTURA_ARRANQUE / 2, 0),
+               size_doc=(0.4, ALTURA_ARRANQUE, LARGO_ESTACION), material=mat_muro_ladrillo)
 
     # --- Techo de vigas (corregido: reemplaza la boveda lisa v1) -----------
-    crear_techo_vigas(col_arquitectura, ancho=ANCHO_TOTAL, largo=LARGO_ESTACION,
+    crear_techo_vigas(col_arquitectura,
+                       ancho=ANCHO_TOTAL, largo=LARGO_ESTACION,
                        altura=ALTURA_TECHO, separacion=SEPARACION_VIGAS,
                        mat_viga=mat_viga, mat_luz=mat_luz_viga, mat_panel=mat_techo_panel)
+    # El techo esta centrado en X=0 por defecto (ver crear_techo_vigas); se
+    # recentra al medio del ancho total nuevo desplazando sus hijos.
+    _centro_techo_x = (X_MURO_OESTE_ANDEN_A + X_MURO_ESTE_ANDEN_B) / 2.0
+    for obj in list(col_arquitectura.objects):
+        if obj.name.startswith("Viga_") or obj.name.startswith("LuzViga_") or obj.name == "Techo_Panel":
+            obj.location.x += _centro_techo_x
 
-    # --- Fosos de via (con balasto + franja naranja indicadora) ------------
-    crear_caja("Foso_Via1", col_arquitectura,
-               pos_doc=(X_VIA_OESTE, -0.55, 0), size_doc=(ANCHO_VIA, 1.1, LARGO_ESTACION), material=mat_balasto)
-    crear_caja("Foso_Via2", col_arquitectura,
-               pos_doc=(X_VIA_ESTE, -0.55, 0), size_doc=(ANCHO_VIA, 1.1, LARGO_ESTACION), material=mat_balasto)
+    # --- Foso de vias combinado (Via1 + Via2 juntas, sin muro entre ellas) --
+    ancho_fosos = X_ANDEN_B_INICIO - X_VIA1_INICIO
+    centro_fosos = (X_VIA1_INICIO + X_ANDEN_B_INICIO) / 2.0
+    crear_caja("Foso_Vias", col_arquitectura,
+               pos_doc=(centro_fosos, -0.55, 0), size_doc=(ancho_fosos, 1.1, LARGO_ESTACION),
+               material=mat_balasto)
 
-    for x_via, nombre_via in ((X_VIA_OESTE, "Via1"), (X_VIA_ESTE, "Via2")):
-        borde = x_via + (-1 if x_via < 0 else 1) * (ANCHO_VIA / 2 - 0.15)
-        crear_caja(f"Franja_Naranja_{nombre_via}", col_arquitectura,
-                   pos_doc=(borde, -0.05, 0), size_doc=(0.08, 0.05, LARGO_ESTACION),
-                   material=mat_franja_via_naranja)
+    crear_caja("Franja_Naranja_Via1", col_arquitectura,
+               pos_doc=(X_VIA1_INICIO + 0.15, -0.05, 0), size_doc=(0.08, 0.05, LARGO_ESTACION),
+               material=mat_franja_via_naranja)
+    crear_caja("Franja_Naranja_Via2", col_arquitectura,
+               pos_doc=(X_ANDEN_B_INICIO - 0.15, -0.05, 0), size_doc=(0.08, 0.05, LARGO_ESTACION),
+               material=mat_franja_via_naranja)
 
     # --- Rieles (2 por via) -------------------------------------------------
-    for centro_via, nombre_via in ((X_VIA_OESTE, "Via1"), (X_VIA_ESTE, "Via2")):
+    for centro_via, nombre_via in ((X_VIA1_CENTRO, "Via1"), (X_VIA2_CENTRO, "Via2")):
         for signo, lado in ((-1, "A"), (1, "B")):
             crear_caja(f"Riel_{nombre_via}_{lado}", col_arquitectura,
                        pos_doc=(centro_via + signo * GALGA, 0.05, 0),
                        size_doc=(0.1, 0.15, LARGO_ESTACION), material=mat_riel)
 
-    # --- Columnas CILINDRICAS (corregido: v1 eran rectangulares) -----------
+    # --- Columnas CILINDRICAS: una fila por anden (corregido: v1/v2 tenian
+    # una sola fila central, asumiendo anden unico) --------------------------
     for i, z in enumerate(POSICIONES_COLUMNAS, start=1):
-        crear_cilindro(f"Columna_{i:02d}", col_arquitectura,
-                        pos_doc=(0, ALTURA_ARRANQUE / 2, z), radio=0.35,
+        crear_cilindro(f"Columna_AndenA_{i:02d}", col_arquitectura,
+                        pos_doc=(X_ANDEN_A_CENTRO, ALTURA_ARRANQUE / 2, z), radio=0.35,
+                        alto_doc=ALTURA_ARRANQUE, material=mat_columna_ladrillo, vertices=16)
+        crear_cilindro(f"Columna_AndenB_{i:02d}", col_arquitectura,
+                        pos_doc=(X_ANDEN_B_CENTRO, ALTURA_ARRANQUE / 2, z), radio=0.35,
                         alto_doc=ALTURA_ARRANQUE, material=mat_columna_ladrillo, vertices=16)
 
-    # --- Caseta de control -----------------------------------------------
+    # --- Caseta de control (en Anden_A, posicion original) -------------------
     crear_caja("Caseta_Control", col_arquitectura,
-               pos_doc=(1.5, 1.1, 0), size_doc=(2, 2.2, 2), material=mat_muro_ladrillo)
+               pos_doc=(X_ANDEN_A_CENTRO - 1.0, 1.1, 0), size_doc=(2, 2.2, 2), material=mat_muro_ladrillo)
 
-    # --- Barreras de seguridad en extremos ----------------------------------
+    # --- Barreras de seguridad en extremos (ambos andenes) -------------------
     for z in (-(MEDIO_LARGO - 1.5), (MEDIO_LARGO - 1.5)):
         etiqueta = "Norte" if z < 0 else "Sur"
-        crear_caja(f"Barrera_Oeste_{etiqueta}", col_senaletica,
-                   pos_doc=(-3.4, 0.5, z), size_doc=(0.3, 1.0, 0.6), material=mat_reja)
-        crear_caja(f"Barrera_Este_{etiqueta}", col_senaletica,
-                   pos_doc=(3.4, 0.5, z), size_doc=(0.3, 1.0, 0.6), material=mat_reja)
+        crear_caja(f"Barrera_AndenA_{etiqueta}", col_senaletica,
+                   pos_doc=(X_VIA1_INICIO - 0.1, 0.5, z), size_doc=(0.3, 1.0, 0.6), material=mat_reja)
+        crear_caja(f"Barrera_AndenB_{etiqueta}", col_senaletica,
+                   pos_doc=(X_ANDEN_B_INICIO + 0.1, 0.5, z), size_doc=(0.3, 1.0, 0.6), material=mat_reja)
 
     # --- Bloqueos ------------------------------------------------------------
     crear_caja("Reja_Escalera_Norte", col_senaletica,
-               pos_doc=(0, 1.5, -MEDIO_LARGO + 0.2), size_doc=(3, 3, 0.1), material=mat_reja)
+               pos_doc=(X_ANDEN_A_CENTRO, 1.5, -MEDIO_LARGO + 0.2), size_doc=(3, 3, 0.1), material=mat_reja)
 
-    crear_caja("Reja_Tunel_Este", col_senaletica,
-               pos_doc=(X_VIA_ESTE, -0.1, MEDIO_LARGO + 0.1), size_doc=(ANCHO_VIA, 2.0, 0.1),
+    # Via2 (Anden_B) sellada -- el jugador no la necesita para el camino critico
+    crear_caja("Reja_Tunel_Via2", col_senaletica,
+               pos_doc=(X_VIA2_CENTRO, -0.1, MEDIO_LARGO + 0.1), size_doc=(ANCHO_VIA, 2.0, 0.1),
                material=mat_reja)
 
-    # --- Panel de llegadas (suspendido, cerca del acceso norte) -------------
+    # --- Panel de llegadas (suspendido, cerca del acceso norte, Anden_A) ----
     crear_caja("Panel_Llegadas_Carcasa", col_senaletica,
-               pos_doc=(0, 3.6, -MEDIO_LARGO + 5), size_doc=(2.5, 0.8, 0.2), material=mat_panel_carcasa)
+               pos_doc=(X_ANDEN_A_CENTRO, 3.6, -MEDIO_LARGO + 5), size_doc=(2.5, 0.8, 0.2),
+               material=mat_panel_carcasa)
     crear_caja("Panel_Llegadas_Pantalla", col_senaletica,
-               pos_doc=(0, 3.6, -MEDIO_LARGO + 5 - 0.11), size_doc=(2.2, 0.5, 0.02),
+               pos_doc=(X_ANDEN_A_CENTRO, 3.6, -MEDIO_LARGO + 5 - 0.11), size_doc=(2.2, 0.5, 0.02),
                material=mat_panel_pantalla)
 
-    # --- Punto de descenso a la via -----------------------------------------
+    # --- Punto de descenso a la via (Anden_A -> Via1, camino critico) -------
     crear_caja("Descenso_Via", col_arquitectura,
-               pos_doc=(-3.75, -0.3, MEDIO_LARGO - 2.5), size_doc=(1.0, 1.1, 2.0), material=mat_piso_manchas)
+               pos_doc=(X_VIA1_INICIO - 0.25, -0.3, MEDIO_LARGO - 2.5), size_doc=(1.0, 1.1, 2.0),
+               material=mat_piso_manchas)
 
     # =====================================================================
     # PROPS (Fase 3.4)
@@ -556,7 +613,7 @@ def generar():
         crear_extintor(f"Extintor_{i:02d}", col_props, pos_doc=(0, 0, z), material=mat_extintor)
 
     crear_caja_herramientas("Caja_Herramientas_Rodrigo", col_props,
-                             pos_doc=(-4.2, 0, MEDIO_LARGO - 4), material=mat_toolbox)
+                             pos_doc=(X_ANDEN_A_CENTRO - 3.0, 0, MEDIO_LARGO - 4), material=mat_toolbox)
 
     crear_reloj_anden("Reloj_Anden", col_props, pos_doc=(0, 0, -20),
                        mat_carcasa=mat_reloj_carcasa, mat_esfera=mat_reloj_esfera)
@@ -568,6 +625,12 @@ def generar():
 
     crear_caja("Nota_Tecnico", col_props, pos_doc=(2.3, 0.46, 0.6),
                size_doc=(0.25, 0.02, 0.18), material=mat_toolbox)
+
+    # Anden_B: props minimos, solo atmosfera (no es camino critico del jugador)
+    crear_banca("Banca_AndenB_01", col_props, pos_doc=(X_ANDEN_B_CENTRO + 0.9, 0, -10),
+                mat_madera=mat_madera, mat_metal=mat_metal_banca)
+    crear_basurero("Basurero_AndenB_01", col_props, pos_doc=(X_ANDEN_B_CENTRO - 0.8, 0, 15),
+                   material=mat_basurero)
 
     total = (len(col_arquitectura.objects) + len(col_senaletica.objects)
              + len(col_props.objects))

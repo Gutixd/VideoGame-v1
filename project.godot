@@ -20,6 +20,10 @@ config/features=PackedStringArray("4.7")
 
 bus_layouts/default="res://assets/audio/default_bus_layout.tres"
 
+[filesystem]
+
+import/blender/enabled=false
+
 [input]
 
 move_forward={

@@ -6,15 +6,14 @@
 [ext_resource type="Texture2D" uid="uid://acg_ov63ndsf" id="Roughness" path="./Metal063_1K-JPG_Roughness.jpg"]
 [ext_resource type="Texture2D" uid="uid://acg_0xej6ri3" id="NormalGL" path="./Metal063_1K-JPG_NormalGL.jpg"]
 [resource]
+albedo_color = Color(0.75, 0.42, 0.22, 1.0)
 albedo_texture = ExtResource("Color")
 metallic_texture = ExtResource("Metalness")
-metallic = 1.0
+metallic = 0.4
 metallic_texture_channel = 4
+roughness = 0.7
 roughness_texture = ExtResource("Roughness")
 roughness_texture_channel = 4
 normal_texture = ExtResource("NormalGL")
 normal_enabled = true
-heightmap_texture = ExtResource("Displacement")
-heightmap_scale = 0.3
-heightmap_enabled = true
 uv1_scale = Vector3(2.0, 1.0, 1.0)

@@ -501,6 +501,22 @@ linea_cero/
 
 ---
 
+## 16. Errata de implementación (encontrada en Fase 3.3 — Materiales)
+
+Al construir la colisión física en Godot se detectaron inconsistencias geométricas en el blockout original (sección 5) que fue necesario corregir. Documentadas aquí para que el plano superior (sección 3) se lea junto con esta errata:
+
+| Elemento original | Problema detectado | Corrección aplicada |
+|---|---|---|
+| Muro Sur en dos piezas (Oeste/Este), cada una cubriendo el ancho de una vía | Bloqueaba físicamente el punto de descenso a la vía (11); geométricamente incorrecto: el andén termina en un muro, pero las vías **continúan** como túnel más allá de la estación en ambos sentidos, no terminan en un muro | Un único `Muro_Sur` de 7 m (solo el ancho del andén). Ambas vías quedan abiertas hacia el sur; el control de acceso se hace con la reja (12), no con un muro |
+| Reja_Tunel_Este como muro completo (3.5×4×0.1) | No correspondía a un elemento realista — una vía sellada se bloquea con una reja a la altura del foso, no con un muro de altura completa | Reja reposicionada a la boca de la vía este, a la altura del foso (3.5×2.0×0.1 a y=-0.1) |
+| Descenso_Via en x=-2 | Esa coordenada caía dentro del rango cubierto por el muro sur-oeste original (contradicción con su propia función) | Reposicionado a x=-3.75 (borde real andén/vía oeste), fuera del área de las barreras de esquina |
+| Muros laterales largos (zócalo + franja identificadora) | **No existían en el blockout original** — sección 5 solo incluía los muros de cierre norte/sur, omitiendo las paredes largas que en la realidad llevan el elemento más reconocible de la identidad visual de Metro Santiago | Agregados: `Muro_Lateral_Oeste` y `Muro_Lateral_Este` en x=∓7, cada uno dividido en Zócalo (crema, 1.2 m) + Franja (ocre/mostaza, 3.1 m), recorriendo los 55 m completos |
+| Bóveda como caja de blockout | Correcto para la fase de blockout (regla "solo cajas"), pero debía reemplazarse en la fase de Materiales/Detalle según lo ya previsto en la sección 5 | Reemplazada por un arco circular segmentado real (radio ≈21 m, alza 1.2 m sobre el arranque de 4.3 m → clave a 5.5 m), generado con `bmesh` en `generar_materiales.py` |
+
+**Lección de proceso:** el blockout debe validarse con colisión física real (no solo revisión visual en el editor) antes de aprobar el paso a la fase de Materiales — varios de estos errores solo se manifestaron al intentar caminar sobre la geometría con el `CharacterBody3D` del jugador.
+
+---
+
 **FIN DEL DOCUMENTO — Fase 2 completa.**
 
 Según el proceso solicitado, ahora corresponde **esperar aprobación** antes de iniciar la Fase 3 (Implementación en Godot: blockout → iluminación → materiales → props → audio → navegación → gameplay, en ese orden estricto, sin mezclar fases).

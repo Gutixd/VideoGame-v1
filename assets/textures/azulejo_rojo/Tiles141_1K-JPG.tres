@@ -11,7 +11,4 @@ roughness_texture = ExtResource("Roughness")
 roughness_texture_channel = 4
 normal_texture = ExtResource("NormalGL")
 normal_enabled = true
-heightmap_texture = ExtResource("Displacement")
-heightmap_scale = 0.3
-heightmap_enabled = true
 uv1_scale = Vector3(3.0, 1.0, 1.0)

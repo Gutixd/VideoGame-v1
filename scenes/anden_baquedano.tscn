@@ -1,6 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://bsye2ov4621r1"]
+[gd_scene load_steps=13 format=3 uid="uid://bsye2ov4621r1"]
 
-[ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_blockout.glb" id="GLB_blockout"]
+[ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_materiales.glb" id="GLB_materiales"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="PackedScene_player"]
 
 [sub_resource type="Environment" id="Environment_anden"]
@@ -16,8 +16,14 @@ size = Vector3(7, 0.2, 55)
 [sub_resource type="BoxShape3D" id="Box_MuroNorte"]
 size = Vector3(14, 4.3, 0.5)
 
-[sub_resource type="BoxShape3D" id="Box_MuroSurEste"]
-size = Vector3(3.5, 4.3, 0.5)
+[sub_resource type="BoxShape3D" id="Box_MuroSur"]
+size = Vector3(7, 4.3, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_MuroLateral"]
+size = Vector3(0.4, 4.3, 55)
+
+[sub_resource type="BoxShape3D" id="Box_RejaTunelEste"]
+size = Vector3(3.5, 2.0, 0.1)
 
 [sub_resource type="BoxShape3D" id="Box_Columna"]
 size = Vector3(0.6, 4.3, 0.6)
@@ -28,9 +34,12 @@ size = Vector3(2, 2.2, 2)
 [sub_resource type="BoxShape3D" id="Box_Barrera"]
 size = Vector3(0.3, 1.0, 0.6)
 
+[sub_resource type="BoxShape3D" id="Box_Descenso"]
+size = Vector3(1.0, 1.1, 2.0)
+
 [node name="AndenBaquedano" type="Node3D"]
 
-[node name="Blockout" parent="." instance=ExtResource("GLB_blockout")]
+[node name="Geometria" parent="." instance=ExtResource("GLB_materiales")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_anden")
@@ -139,11 +148,35 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -27.5)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorte"]
 shape = SubResource("Box_MuroNorte")
 
-[node name="MuroSurEste" type="StaticBody3D" parent="Colision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.15, 27.5)
+[node name="MuroSur" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 27.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurEste"]
-shape = SubResource("Box_MuroSurEste")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSur"]
+shape = SubResource("Box_MuroSur")
+
+[node name="MuroLateralOeste" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.15, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralOeste"]
+shape = SubResource("Box_MuroLateral")
+
+[node name="MuroLateralEste" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.15, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralEste"]
+shape = SubResource("Box_MuroLateral")
+
+[node name="RejaTunelEste" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, -0.1, 27.6)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaTunelEste"]
+shape = SubResource("Box_RejaTunelEste")
+
+[node name="DescensoVia" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, -0.3, 25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/DescensoVia"]
+shape = SubResource("Box_Descenso")
 
 [node name="Columna_01" type="StaticBody3D" parent="Colision"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -24)

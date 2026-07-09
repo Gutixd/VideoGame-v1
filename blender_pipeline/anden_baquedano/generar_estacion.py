@@ -1,6 +1,7 @@
 """
 LINEA CERO - Anden Baquedano
 Fase 3.3 + 3.4 - Estacion completa a escala real (sin comprimir) + Props
+v2: Reconstruccion de materiales/geometria segun fotos reales de referencia
 
 Ejecutar en modo headless:
     blender --background --python generar_estacion.py
@@ -8,14 +9,24 @@ Ejecutar en modo headless:
 CAMBIO DE ALCANCE (aprobado explicitamente por el productor):
 El documento de diseno original (seccion 15) comprimia el largo real
 (~95-110 m estimados) a 55 m jugables por ritmo de gameplay. Esa
-decision queda REVERTIDA: esta version construye la estacion a
+decision quedo REVERTIDA: esta version construye la estacion a
 LARGO_ESTACION = 100 m, dentro del rango real estimado, sin reducir
-el ancho (14 m) ni las alturas (4.3 m arranque / 5.5 m clave), que ya
-eran reales desde el blockout original.
+el ancho (14 m).
 
-Todo se genera parametrico a partir de las constantes de la seccion
-"PARAMETROS REALES" para que cualquier ajuste futuro de escala no
-requiera reescribir posiciones a mano.
+CORRECCION v2 (fotos reales de referencia aportadas por el productor):
+La v1 asumia una boveda de hormigon visto lisa + muros ceramicos
+crema/ocre, extrapolado por analogia sin foto real del anden. Fotos
+reales muestran:
+  - Techo de VIGAS TRANSVERSALES (no boveda lisa), con luces lineales
+    montadas bajo cada viga
+  - Muros de ceramica color terracota/ladrillo uniforme (no crema+ocre
+    en dos tonos)
+  - Piso con patron de "manchas" oscuras irregulares sobre base clara
+    (aproximado aqui con textura procedural Voronoi, no hay foto en
+    angulo perpendicular todavia para convertir a textura real)
+  - Columnas CILINDRICAS (no rectangulares)
+  - Franja de luz naranja a lo largo de la via (indicador real)
+Ver referencias_fotograficas/ para las fotos que motivaron este cambio.
 
 Convencion de coordenadas (igual que scripts anteriores):
     X_doc = Este / Oeste       -> Blender X
@@ -24,7 +35,6 @@ Convencion de coordenadas (igual que scripts anteriores):
 """
 
 import bpy
-import bmesh
 import math
 import os
 
@@ -35,19 +45,18 @@ import os
 ANCHO_ANDEN = 7.0
 ANCHO_VIA = 3.5
 ANCHO_TOTAL = ANCHO_ANDEN + 2 * ANCHO_VIA          # 14.0 m
-LARGO_ESTACION = 100.0                             # antes 55.0 (comprimido)
+LARGO_ESTACION = 100.0
 ALTURA_ARRANQUE = 4.3
-ALZA_BOVEDA = 1.2                                  # clave a 5.5 m
+ALTURA_TECHO = 5.0                                 # techo de vigas, mas bajo que la boveda v1
 SEPARACION_COLUMNAS = 6.0
-ALTURA_ZOCALO = 1.2
-ALTURA_FRANJA = ALTURA_ARRANQUE - ALTURA_ZOCALO
-GALGA = 0.7175                                     # medio-ancho entre rieles
+SEPARACION_VIGAS = 4.0
+GALGA = 0.7175
 
-MEDIO_LARGO = LARGO_ESTACION / 2.0                 # 50.0
-MEDIO_ANDEN = ANCHO_ANDEN / 2.0                     # 3.5
-X_VIA_OESTE = -(MEDIO_ANDEN + ANCHO_VIA / 2.0)      # -5.25
-X_VIA_ESTE = (MEDIO_ANDEN + ANCHO_VIA / 2.0)        # 5.25
-X_MURO_LATERAL = ANCHO_TOTAL / 2.0                  # 7.0
+MEDIO_LARGO = LARGO_ESTACION / 2.0
+MEDIO_ANDEN = ANCHO_ANDEN / 2.0
+X_VIA_OESTE = -(MEDIO_ANDEN + ANCHO_VIA / 2.0)
+X_VIA_ESTE = (MEDIO_ANDEN + ANCHO_VIA / 2.0)
+X_MURO_LATERAL = ANCHO_TOTAL / 2.0
 
 MARGEN_COLUMNAS = 2.0
 _z = -(MEDIO_LARGO - MARGEN_COLUMNAS)
@@ -166,6 +175,42 @@ def crear_material_simple(nombre, color, metallic=0.0, roughness=0.5,
     return mat
 
 
+def crear_material_manchas(nombre, color_base, color_manchas, roughness_default=0.3,
+                            escala=6.0, umbral=0.35):
+    """Patron de 'nubes'/manchas oscuras sobre base clara, via Voronoi procedural.
+
+    Aproximacion deliberada: no existe (todavia) una foto perpendicular
+    real del piso para convertir a textura tileable. Ver
+    referencias_fotograficas/10_Texturas -- pendiente de reemplazo.
+    """
+    mat = bpy.data.materials.new(nombre)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    links = mat.node_tree.links
+    bsdf = nodes.get("Principled BSDF")
+
+    tex_coord = nodes.new('ShaderNodeTexCoord')
+    mapping = nodes.new('ShaderNodeMapping')
+    links.new(tex_coord.outputs['Generated'], mapping.inputs['Vector'])
+
+    voronoi = nodes.new('ShaderNodeTexVoronoi')
+    voronoi.voronoi_dimensions = '2D'
+    voronoi.feature = 'F1'
+    voronoi.inputs['Scale'].default_value = escala
+    links.new(mapping.outputs['Vector'], voronoi.inputs['Vector'])
+
+    ramp = nodes.new('ShaderNodeValToRGB')
+    ramp.color_ramp.elements[0].position = 0.0
+    ramp.color_ramp.elements[0].color = (*color_manchas, 1.0)
+    ramp.color_ramp.elements[1].position = umbral
+    ramp.color_ramp.elements[1].color = (*color_base, 1.0)
+    links.new(voronoi.outputs['Distance'], ramp.inputs['Fac'])
+
+    links.new(ramp.outputs['Color'], bsdf.inputs['Base Color'])
+    bsdf.inputs['Roughness'].default_value = roughness_default
+    return mat
+
+
 # ---------------------------------------------------------------------------
 # Utilidades de escena / geometria
 # ---------------------------------------------------------------------------
@@ -237,7 +282,6 @@ def crear_caja(nombre, coleccion, pos_doc, size_doc, material=None, unwrap=True)
 
 def crear_cilindro(nombre, coleccion, pos_doc, radio, alto_doc, material=None,
                     vertices=16, rotar_x90=False):
-    """Cilindro con eje vertical (Blender Z) salvo rotar_x90=True (eje horizontal Y)."""
     bx, by, bz = doc_a_blender_pos(*pos_doc)
     bpy.ops.mesh.primitive_cylinder_add(vertices=vertices, radius=radio, depth=alto_doc,
                                          location=(bx, by, bz))
@@ -260,41 +304,22 @@ def crear_cilindro(nombre, coleccion, pos_doc, radio, alto_doc, material=None,
     return obj
 
 
-def crear_boveda(nombre, coleccion, ancho, largo, altura_arranque, alza, material=None, segmentos=32):
-    medio_ancho = ancho / 2.0
-    radio = (medio_ancho ** 2 + alza ** 2) / (2 * alza)
-    theta_max = math.asin(medio_ancho / radio)
+def crear_techo_vigas(coleccion, ancho, largo, altura, separacion, mat_viga, mat_luz, mat_panel):
+    """Techo de vigas transversales con luces lineales, segun fotos reales
+    (reemplaza la boveda lisa de la v1, que era una suposicion sin foto)."""
     medio_largo = largo / 2.0
+    z = -medio_largo + separacion / 2.0
+    i = 0
+    while z < medio_largo:
+        crear_caja(f"Viga_{i:02d}", coleccion, pos_doc=(0, altura, z),
+                   size_doc=(ancho, 0.3, 0.4), material=mat_viga)
+        crear_caja(f"LuzViga_{i:02d}", coleccion, pos_doc=(0, altura - 0.22, z),
+                   size_doc=(ancho * 0.85, 0.05, 0.08), material=mat_luz)
+        z += separacion
+        i += 1
 
-    mesh = bpy.data.meshes.new(nombre + "_Mesh")
-    bm = bmesh.new()
-
-    anillo_norte = []
-    anillo_sur = []
-    for i in range(segmentos + 1):
-        t = -theta_max + i * (2 * theta_max) / segmentos
-        x = radio * math.sin(t)
-        z = altura_arranque + radio * (math.cos(t) - math.cos(theta_max))
-        anillo_norte.append(bm.verts.new((x, -medio_largo, z)))
-        anillo_sur.append(bm.verts.new((x, medio_largo, z)))
-
-    bm.verts.ensure_lookup_table()
-    for i in range(segmentos):
-        bm.faces.new((anillo_norte[i], anillo_norte[i + 1],
-                       anillo_sur[i + 1], anillo_sur[i]))
-
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    bm.to_mesh(mesh)
-    bm.free()
-
-    obj = bpy.data.objects.new(nombre, mesh)
-    coleccion.objects.link(obj)
-
-    unwrap_basico(obj)
-    if material:
-        obj.data.materials.append(material)
-        material.use_backface_culling = False
-    return obj
+    crear_caja("Techo_Panel", coleccion, pos_doc=(0, altura + 0.35, 0),
+               size_doc=(ancho, 0.1, largo), material=mat_panel)
 
 
 # ---------------------------------------------------------------------------
@@ -302,22 +327,16 @@ def crear_boveda(nombre, coleccion, ancho, largo, altura_arranque, alza, materia
 # ---------------------------------------------------------------------------
 
 def crear_banca(nombre, coleccion, pos_doc, mat_madera, mat_metal):
-    contenedor = bpy.data.objects.new(nombre, None)
-    coleccion.objects.link(contenedor)
-    bx, by, bz = doc_a_blender_pos(*pos_doc)
-    contenedor.location = (bx, by, bz)
-
-    asiento = crear_caja(f"{nombre}_Asiento", coleccion,
-                          pos_doc=(pos_doc[0], pos_doc[1] + 0.45, pos_doc[2]),
-                          size_doc=(1.4, 0.05, 0.45), material=mat_madera)
-    respaldo = crear_caja(f"{nombre}_Respaldo", coleccion,
-                           pos_doc=(pos_doc[0], pos_doc[1] + 0.75, pos_doc[2] - 0.2),
-                           size_doc=(1.4, 0.6, 0.05), material=mat_madera)
+    crear_caja(f"{nombre}_Asiento", coleccion,
+               pos_doc=(pos_doc[0], pos_doc[1] + 0.45, pos_doc[2]),
+               size_doc=(1.4, 0.05, 0.45), material=mat_madera)
+    crear_caja(f"{nombre}_Respaldo", coleccion,
+               pos_doc=(pos_doc[0], pos_doc[1] + 0.75, pos_doc[2] - 0.2),
+               size_doc=(1.4, 0.6, 0.05), material=mat_madera)
     for signo, suf in ((-1, "A"), (1, "B")):
         crear_caja(f"{nombre}_Pata_{suf}", coleccion,
                    pos_doc=(pos_doc[0] + signo * 0.6, pos_doc[1] + 0.22, pos_doc[2]),
                    size_doc=(0.08, 0.45, 0.4), material=mat_metal)
-    return contenedor
 
 
 def crear_basurero(nombre, coleccion, pos_doc, material):
@@ -388,21 +407,27 @@ def generar():
     col_props = crear_coleccion("Props", padre=col_raiz)
 
     # --- Materiales ---------------------------------------------------
-    mat_hormigon = crear_material_pbr("Hormigon_Boveda", RUTAS["hormigon"],
-                                       roughness_default=0.85, uv_scale=(8, 8))
-    mat_hormigon_columna = crear_material_pbr("Hormigon_Columna", RUTAS["hormigon"],
-                                               tint=(0.75, 0.75, 0.78), roughness_default=0.6,
-                                               uv_scale=(1, 2))
+    mat_viga = crear_material_pbr("Hormigon_Viga", RUTAS["hormigon"],
+                                   tint=(0.55, 0.53, 0.5), roughness_default=0.7,
+                                   uv_scale=(2, 1))
+    mat_techo_panel = crear_material_pbr("Panel_Techo", RUTAS["hormigon"],
+                                          tint=(0.4, 0.4, 0.42), roughness_default=0.6,
+                                          uv_scale=(8, 8))
+    mat_luz_viga = crear_material_simple("Luz_Viga_Emisiva", (0.9, 0.9, 0.85),
+                                          emission=(1.0, 0.97, 0.85), emission_strength=4.0)
     mat_hormigon_muro_cierre = crear_material_pbr("Hormigon_MuroCierre", RUTAS["hormigon"],
                                                    roughness_default=0.85, uv_scale=(3, 2))
-    mat_zocalo = crear_material_pbr("Zocalo_Ceramico", RUTAS["ceramica"],
-                                     tint=(0.85, 0.8, 0.7), roughness_default=0.3,
-                                     uv_scale=(16, 1))
-    mat_franja = crear_material_pbr("Franja_Identificadora", RUTAS["ceramica"],
-                                     tint=(0.75, 0.55, 0.15), roughness_default=0.35,
-                                     uv_scale=(16, 2))
-    mat_terrazo = crear_material_pbr("Terrazo_Piso", RUTAS["terrazo"],
-                                      roughness_default=0.35, uv_scale=(3, 36))
+    # Muro de ladrillo/terracota (corregido segun foto real -- ver docstring del modulo)
+    mat_muro_ladrillo = crear_material_pbr("Muro_Ladrillo_Terracota", RUTAS["ceramica"],
+                                            tint=(0.55, 0.27, 0.18), roughness_default=0.4,
+                                            uv_scale=(16, 2))
+    mat_columna_ladrillo = crear_material_pbr("Columna_Ladrillo", RUTAS["ceramica"],
+                                               tint=(0.5, 0.24, 0.16), roughness_default=0.45,
+                                               uv_scale=(2, 3))
+    # Piso con patron de manchas (procedural, pendiente de foto real perpendicular)
+    mat_piso_manchas = crear_material_manchas("Piso_Manchas", color_base=(0.75, 0.71, 0.62),
+                                               color_manchas=(0.28, 0.24, 0.2),
+                                               roughness_default=0.65, escala=8.0, umbral=0.45)
     mat_balasto = crear_material_pbr("Balasto_Via", RUTAS["balasto"],
                                       roughness_default=0.95, uv_scale=(2, 36))
     mat_riel = crear_material_pbr("Riel_Metalico", RUTAS["metal"],
@@ -413,6 +438,8 @@ def generar():
                                    roughness_default=0.7, uv_scale=(2, 2))
     mat_franja_tactil = crear_material_simple("Franja_Tactil", (0.85, 0.7, 0.05),
                                                metallic=0.0, roughness=0.6)
+    mat_franja_via_naranja = crear_material_simple("Franja_Via_Naranja", (0.4, 0.15, 0.02),
+                                                    emission=(1.0, 0.45, 0.05), emission_strength=3.0)
     mat_panel_carcasa = crear_material_simple("Panel_Carcasa", (0.05, 0.05, 0.06),
                                                metallic=0.3, roughness=0.4)
     mat_panel_pantalla = crear_material_simple("Panel_Pantalla", (0.15, 0.08, 0.0),
@@ -429,7 +456,7 @@ def generar():
 
     # --- Piso -----------------------------------------------------------
     crear_caja("Piso_Anden", col_arquitectura,
-               pos_doc=(0, 0, 0), size_doc=(ANCHO_ANDEN, 0.2, LARGO_ESTACION), material=mat_terrazo)
+               pos_doc=(0, 0, 0), size_doc=(ANCHO_ANDEN, 0.2, LARGO_ESTACION), material=mat_piso_manchas)
 
     crear_caja("Franja_Tactil_Oeste", col_senaletica,
                pos_doc=(-3.3, 0.01, 0), size_doc=(0.3, 0.02, LARGO_ESTACION), material=mat_franja_tactil)
@@ -445,24 +472,28 @@ def generar():
                pos_doc=(0, 2.15, MEDIO_LARGO), size_doc=(ANCHO_ANDEN, ALTURA_ARRANQUE, 0.5),
                material=mat_hormigon_muro_cierre)
 
-    # --- Muros laterales largos: zocalo + franja identificadora ---------
+    # --- Muros laterales largos: ladrillo/terracota uniforme (corregido) ---
     for lado, x in (("Oeste", -X_MURO_LATERAL), ("Este", X_MURO_LATERAL)):
-        crear_caja(f"Muro_Lateral_{lado}_Zocalo", col_arquitectura,
-                   pos_doc=(x, ALTURA_ZOCALO / 2, 0), size_doc=(0.4, ALTURA_ZOCALO, LARGO_ESTACION),
-                   material=mat_zocalo)
-        crear_caja(f"Muro_Lateral_{lado}_Franja", col_arquitectura,
-                   pos_doc=(x, ALTURA_ZOCALO + ALTURA_FRANJA / 2, 0),
-                   size_doc=(0.4, ALTURA_FRANJA, LARGO_ESTACION), material=mat_franja)
+        crear_caja(f"Muro_Lateral_{lado}", col_arquitectura,
+                   pos_doc=(x, ALTURA_ARRANQUE / 2, 0),
+                   size_doc=(0.4, ALTURA_ARRANQUE, LARGO_ESTACION), material=mat_muro_ladrillo)
 
-    # --- Boveda real (arco segmentado) -----------------------------------
-    crear_boveda("Boveda", col_arquitectura, ancho=ANCHO_TOTAL, largo=LARGO_ESTACION,
-                 altura_arranque=ALTURA_ARRANQUE, alza=ALZA_BOVEDA, material=mat_hormigon)
+    # --- Techo de vigas (corregido: reemplaza la boveda lisa v1) -----------
+    crear_techo_vigas(col_arquitectura, ancho=ANCHO_TOTAL, largo=LARGO_ESTACION,
+                       altura=ALTURA_TECHO, separacion=SEPARACION_VIGAS,
+                       mat_viga=mat_viga, mat_luz=mat_luz_viga, mat_panel=mat_techo_panel)
 
-    # --- Fosos de via (con balasto) ---------------------------------------
+    # --- Fosos de via (con balasto + franja naranja indicadora) ------------
     crear_caja("Foso_Via1", col_arquitectura,
                pos_doc=(X_VIA_OESTE, -0.55, 0), size_doc=(ANCHO_VIA, 1.1, LARGO_ESTACION), material=mat_balasto)
     crear_caja("Foso_Via2", col_arquitectura,
                pos_doc=(X_VIA_ESTE, -0.55, 0), size_doc=(ANCHO_VIA, 1.1, LARGO_ESTACION), material=mat_balasto)
+
+    for x_via, nombre_via in ((X_VIA_OESTE, "Via1"), (X_VIA_ESTE, "Via2")):
+        borde = x_via + (-1 if x_via < 0 else 1) * (ANCHO_VIA / 2 - 0.15)
+        crear_caja(f"Franja_Naranja_{nombre_via}", col_arquitectura,
+                   pos_doc=(borde, -0.05, 0), size_doc=(0.08, 0.05, LARGO_ESTACION),
+                   material=mat_franja_via_naranja)
 
     # --- Rieles (2 por via) -------------------------------------------------
     for centro_via, nombre_via in ((X_VIA_OESTE, "Via1"), (X_VIA_ESTE, "Via2")):
@@ -471,17 +502,17 @@ def generar():
                        pos_doc=(centro_via + signo * GALGA, 0.05, 0),
                        size_doc=(0.1, 0.15, LARGO_ESTACION), material=mat_riel)
 
-    # --- Columnas (parametrico, cada 6 m real) ------------------------------
+    # --- Columnas CILINDRICAS (corregido: v1 eran rectangulares) -----------
     for i, z in enumerate(POSICIONES_COLUMNAS, start=1):
-        crear_caja(f"Columna_{i:02d}", col_arquitectura,
-                   pos_doc=(0, 2.15, z), size_doc=(0.6, ALTURA_ARRANQUE, 0.6),
-                   material=mat_hormigon_columna)
+        crear_cilindro(f"Columna_{i:02d}", col_arquitectura,
+                        pos_doc=(0, ALTURA_ARRANQUE / 2, z), radio=0.35,
+                        alto_doc=ALTURA_ARRANQUE, material=mat_columna_ladrillo, vertices=16)
 
     # --- Caseta de control -----------------------------------------------
     crear_caja("Caseta_Control", col_arquitectura,
-               pos_doc=(1.5, 1.1, 0), size_doc=(2, 2.2, 2), material=mat_zocalo)
+               pos_doc=(1.5, 1.1, 0), size_doc=(2, 2.2, 2), material=mat_muro_ladrillo)
 
-    # --- Barreras de seguridad en extremos (relativas al nuevo largo) -----
+    # --- Barreras de seguridad en extremos ----------------------------------
     for z in (-(MEDIO_LARGO - 1.5), (MEDIO_LARGO - 1.5)):
         etiqueta = "Norte" if z < 0 else "Sur"
         crear_caja(f"Barrera_Oeste_{etiqueta}", col_senaletica,
@@ -506,7 +537,7 @@ def generar():
 
     # --- Punto de descenso a la via -----------------------------------------
     crear_caja("Descenso_Via", col_arquitectura,
-               pos_doc=(-3.75, -0.3, MEDIO_LARGO - 2.5), size_doc=(1.0, 1.1, 2.0), material=mat_terrazo)
+               pos_doc=(-3.75, -0.3, MEDIO_LARGO - 2.5), size_doc=(1.0, 1.1, 2.0), material=mat_piso_manchas)
 
     # =====================================================================
     # PROPS (Fase 3.4)
@@ -523,7 +554,6 @@ def generar():
 
     for i, z in enumerate((-12, 24), start=1):
         crear_extintor(f"Extintor_{i:02d}", col_props, pos_doc=(0, 0, z), material=mat_extintor)
-        # Reposicionar pegado a columna mas cercana en X (junto a muro lateral este)
 
     crear_caja_herramientas("Caja_Herramientas_Rodrigo", col_props,
                              pos_doc=(-4.2, 0, MEDIO_LARGO - 4), material=mat_toolbox)
@@ -533,18 +563,17 @@ def generar():
 
     for i, z in enumerate((-40, -2, 40), start=1):
         crear_cartel_colgante(f"Cartel_Baquedano_{i:02d}", col_senaletica,
-                                pos_doc=(0, 4.35, z), mat_panel=mat_franja, texto="BAQUEDANO",
+                                pos_doc=(0, 4.35, z), mat_panel=mat_muro_ladrillo, texto="BAQUEDANO",
                                 mat_texto=mat_cartel_texto)
 
-    # Nota de tecnico: panel simple junto a la caseta (contenido narrativo se
-    # gestiona via script de gameplay, no geometria)
     crear_caja("Nota_Tecnico", col_props, pos_doc=(2.3, 0.46, 0.6),
                size_doc=(0.25, 0.02, 0.18), material=mat_toolbox)
 
     total = (len(col_arquitectura.objects) + len(col_senaletica.objects)
              + len(col_props.objects))
-    print(f"[LINEA CERO] Estacion completa generada. Objetos totales: {total}. "
-          f"Columnas: {len(POSICIONES_COLUMNAS)}. Largo real: {LARGO_ESTACION} m.")
+    print(f"[LINEA CERO] Estacion completa generada (v2). Objetos totales: {total}. "
+          f"Columnas: {len(POSICIONES_COLUMNAS)}. Vigas: {int(LARGO_ESTACION // SEPARACION_VIGAS)}. "
+          f"Largo real: {LARGO_ESTACION} m.")
 
 
 # ---------------------------------------------------------------------------

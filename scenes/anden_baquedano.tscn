@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bmsxht6hd6lv6" path="res://scripts/interactable_panel.gd" id="5_yw0ss"]
 [ext_resource type="Script" uid="uid://dud70jwldaxpn" path="res://scripts/interactable_nota.gd" id="6_ehxyu"]
 [ext_resource type="AudioStream" uid="uid://bqj73u0o7oa27" path="res://assets/audio/anden_baquedano/zumbido_electrico.wav" id="7_efues"]
-[ext_resource type="Script" path="res://scripts/audio_loop_ambiente.gd" id="8_uy7mj"]
+[ext_resource type="Script" uid="uid://chbw7mosapov5" path="res://scripts/audio_loop_ambiente.gd" id="8_uy7mj"]
 [ext_resource type="AudioStream" uid="uid://bmh2cnu1q3i0u" path="res://assets/audio/anden_baquedano/chisporroteo.wav" id="9_vluvw"]
 [ext_resource type="AudioStream" uid="uid://domvn134t6ihh" path="res://assets/audio/anden_baquedano/tren_fantasma.wav" id="10_i82aq"]
 [ext_resource type="AudioStream" uid="uid://b335xfk8elnl7" path="res://assets/audio/anden_baquedano/radio_estatica.wav" id="11_adss7"]
@@ -70,103 +70,103 @@ environment = SubResource("Environment_anden")
 [node name="Luz_Cornisa_01" type="OmniLight3D" parent="Iluminacion" unique_id=1734983695]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -48)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_02" type="OmniLight3D" parent="Iluminacion" unique_id=1994039335]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -42)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_03" type="OmniLight3D" parent="Iluminacion" unique_id=713760215]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -36)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_04" type="OmniLight3D" parent="Iluminacion" unique_id=341580488]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -30)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_05" type="OmniLight3D" parent="Iluminacion" unique_id=193791858]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -24)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_06" type="OmniLight3D" parent="Iluminacion" unique_id=1208148887]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -18)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_07" type="OmniLight3D" parent="Iluminacion" unique_id=978914270]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -12)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_08" type="OmniLight3D" parent="Iluminacion" unique_id=455270508]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -6)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_09" type="OmniLight3D" parent="Iluminacion" unique_id=21106766]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 0)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_10" type="OmniLight3D" parent="Iluminacion" unique_id=824860774]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 6)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_11" type="OmniLight3D" parent="Iluminacion" unique_id=307815578]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 12)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_12" type="OmniLight3D" parent="Iluminacion" unique_id=1898209429]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 18)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_13" type="OmniLight3D" parent="Iluminacion" unique_id=892990666]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 24)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_14" type="OmniLight3D" parent="Iluminacion" unique_id=1224725107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 30)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_15" type="OmniLight3D" parent="Iluminacion" unique_id=1277924971]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 36)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_16" type="OmniLight3D" parent="Iluminacion" unique_id=1723128678]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 42)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Cornisa_17" type="OmniLight3D" parent="Iluminacion" unique_id=857339695]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 48)
 light_color = Color(1, 0.92, 0.8, 1)
-light_energy = 5.0
+light_energy = 2.2
 omni_range = 10.0
 
 [node name="Luz_Emergencia_01" type="OmniLight3D" parent="Iluminacion" unique_id=906969948]

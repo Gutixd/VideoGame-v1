@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bsye2ov4621r1"]
+[gd_scene load_steps=10 format=3 uid="uid://bsye2ov4621r1"]
 
 [ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_blockout.glb" id="GLB_blockout"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="PackedScene_player"]
 
 [sub_resource type="Environment" id="Environment_anden"]
 background_mode = 1
@@ -8,6 +9,24 @@ background_color = Color(0.015, 0.015, 0.018, 1.0)
 ambient_light_source = 2
 ambient_light_color = Color(0.15, 0.16, 0.18, 1.0)
 ambient_light_energy = 0.25
+
+[sub_resource type="BoxShape3D" id="Box_Piso"]
+size = Vector3(7, 0.2, 55)
+
+[sub_resource type="BoxShape3D" id="Box_MuroNorte"]
+size = Vector3(14, 4.3, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_MuroSurEste"]
+size = Vector3(3.5, 4.3, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_Columna"]
+size = Vector3(0.6, 4.3, 0.6)
+
+[sub_resource type="BoxShape3D" id="Box_Caseta"]
+size = Vector3(2, 2.2, 2)
+
+[sub_resource type="BoxShape3D" id="Box_Barrera"]
+size = Vector3(0.3, 1.0, 0.6)
 
 [node name="AndenBaquedano" type="Node3D"]
 
@@ -102,3 +121,110 @@ light_color = Color(0.7, 0.75, 0.8, 1.0)
 light_energy_multiplier = 0.3
 spot_range = 8.0
 spot_angle = 30.0
+
+[node name="Player" parent="." instance=ExtResource("PackedScene_player")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.0, -26)
+
+[node name="Colision" type="Node3D" parent="."]
+
+[node name="Piso" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Piso"]
+shape = SubResource("Box_Piso")
+
+[node name="MuroNorte" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -27.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorte"]
+shape = SubResource("Box_MuroNorte")
+
+[node name="MuroSurEste" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.15, 27.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurEste"]
+shape = SubResource("Box_MuroSurEste")
+
+[node name="Columna_01" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -24)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_01"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_02" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -18)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_02"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_03" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -12)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_03"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_04" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -6)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_04"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_05" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_05"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_06" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 6)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_06"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_07" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 12)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_07"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_08" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 18)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_08"]
+shape = SubResource("Box_Columna")
+
+[node name="Columna_09" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 24)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_09"]
+shape = SubResource("Box_Columna")
+
+[node name="CasetaControl" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/CasetaControl"]
+shape = SubResource("Box_Caseta")
+
+[node name="Barrera_Oeste_Norte" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0.5, -26)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Norte"]
+shape = SubResource("Box_Barrera")
+
+[node name="Barrera_Este_Norte" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.5, -26)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Norte"]
+shape = SubResource("Box_Barrera")
+
+[node name="Barrera_Oeste_Sur" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0.5, 26)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Sur"]
+shape = SubResource("Box_Barrera")
+
+[node name="Barrera_Este_Sur" type="StaticBody3D" parent="Colision"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.5, 26)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Sur"]
+shape = SubResource("Box_Barrera")

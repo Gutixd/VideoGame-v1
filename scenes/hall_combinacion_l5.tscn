@@ -1,0 +1,264 @@
+[gd_scene format=3 uid="uid://bcu5pkkfg1l5y"]
+
+[ext_resource type="PackedScene" uid="uid://p2tmwmac472f" path="res://assets/models/hall_combinacion_l5/hall_combinacion_l5_blockout.glb" id="GLB_hall"]
+[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://scenes/player.tscn" id="PackedScene_player"]
+
+[sub_resource type="Environment" id="Environment_hall"]
+background_mode = 1
+background_color = Color(0.02, 0.02, 0.022, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.25, 0.25, 0.27, 1)
+ambient_light_energy = 0.4
+
+[sub_resource type="BoxShape3D" id="Box_PisoHall"]
+size = Vector3(20, 0.2, 25)
+
+[sub_resource type="BoxShape3D" id="Box_MuroNorteSurHall"]
+size = Vector3(20, 4.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_MuroEsteOesteHall"]
+size = Vector3(0.5, 4.5, 25)
+
+[sub_resource type="BoxShape3D" id="Box_Torniquete"]
+size = Vector3(0.4, 1, 0.6)
+
+[sub_resource type="BoxShape3D" id="Box_Servicio"]
+size = Vector3(2.5, 2.2, 2)
+
+[sub_resource type="BoxShape3D" id="Box_EscaleraTramo"]
+size = Vector3(4, 2.5, 4)
+
+[sub_resource type="BoxShape3D" id="Box_Descanso"]
+size = Vector3(4, 0.2, 2)
+
+[sub_resource type="BoxShape3D" id="Box_PasilloL5"]
+size = Vector3(4, 4, 8)
+
+[sub_resource type="BoxShape3D" id="Box_EscaleraL5"]
+size = Vector3(4, 10, 6)
+
+[sub_resource type="BoxShape3D" id="Box_PisoAndenL5"]
+size = Vector3(7, 0.2, 60)
+
+[sub_resource type="BoxShape3D" id="Box_MuroLateralAndenL5"]
+size = Vector3(0.5, 4, 60)
+
+[sub_resource type="BoxShape3D" id="Box_RejaL7"]
+size = Vector3(3.5, 3, 0.1)
+
+[node name="HallCombinacionL5" type="Node3D" unique_id=279984855]
+
+[node name="Geometria" parent="." unique_id=913159249 instance=ExtResource("GLB_hall")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=926517767]
+environment = SubResource("Environment_hall")
+
+[node name="Iluminacion" type="Node3D" parent="." unique_id=252516923]
+
+[node name="Luz_Hall_01" type="OmniLight3D" parent="Iluminacion" unique_id=623493575]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4.2, -8)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Hall_02" type="OmniLight3D" parent="Iluminacion" unique_id=642389018]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 4.2, -8)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Hall_03" type="OmniLight3D" parent="Iluminacion" unique_id=993837354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4.2, 0)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Hall_04" type="OmniLight3D" parent="Iluminacion" unique_id=1448951268]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 4.2, 0)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Hall_05" type="OmniLight3D" parent="Iluminacion" unique_id=1740007831]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 4.2, 8)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Hall_06" type="OmniLight3D" parent="Iluminacion" unique_id=495724396]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 4.2, 8)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 4.0
+omni_range = 10.0
+
+[node name="Luz_Escalera_01" type="OmniLight3D" parent="Iluminacion" unique_id=803864795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 16)
+light_color = Color(0.9, 0.9, 0.95, 1)
+light_energy = 2.5
+omni_range = 6.0
+
+[node name="Luz_Escalera_02" type="OmniLight3D" parent="Iluminacion" unique_id=1165962566]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.5, 21)
+light_color = Color(0.9, 0.9, 0.95, 1)
+light_energy = 2.5
+omni_range = 6.0
+
+[node name="Luz_AndenL5_01" type="OmniLight3D" parent="Iluminacion" unique_id=390105088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, -2)
+light_color = Color(0.8, 0.85, 0.95, 1)
+light_energy = 2.5
+omni_range = 8.0
+
+[node name="Luz_AndenL5_02" type="OmniLight3D" parent="Iluminacion" unique_id=1944005587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, 15)
+light_color = Color(0.8, 0.85, 0.95, 1)
+light_energy = 2.0
+omni_range = 8.0
+
+[node name="Luz_AndenL5_03" type="OmniLight3D" parent="Iluminacion" unique_id=720971882]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, 30)
+light_color = Color(0.7, 0.75, 0.85, 1)
+light_energy = 1.2
+omni_range = 7.0
+
+[node name="Luz_Emergencia_Hall_01" type="OmniLight3D" parent="Iluminacion" unique_id=566710797]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 3.8, -11)
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
+omni_range = 4.0
+
+[node name="Luz_Emergencia_Hall_02" type="OmniLight3D" parent="Iluminacion" unique_id=91910738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 3.8, 11)
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
+omni_range = 4.0
+
+[node name="Player" parent="." unique_id=1972862620 instance=ExtResource("PackedScene_player")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1, -11.5)
+
+[node name="Colision" type="Node3D" parent="." unique_id=1373557971]
+
+[node name="PisoHall" type="StaticBody3D" parent="Colision" unique_id=1979183150]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PisoHall" unique_id=1053653443]
+shape = SubResource("Box_PisoHall")
+
+[node name="MuroNorteHall" type="StaticBody3D" parent="Colision" unique_id=1688586130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, -12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorteHall" unique_id=1536885659]
+shape = SubResource("Box_MuroNorteSurHall")
+
+[node name="MuroEsteHall" type="StaticBody3D" parent="Colision" unique_id=1049821636]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroEsteHall" unique_id=2077727895]
+shape = SubResource("Box_MuroEsteOesteHall")
+
+[node name="MuroOesteHall" type="StaticBody3D" parent="Colision" unique_id=2039761752]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 2.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroOesteHall" unique_id=1450400982]
+shape = SubResource("Box_MuroEsteOesteHall")
+
+[node name="Torniquete_01" type="StaticBody3D" parent="Colision" unique_id=2115104032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.5, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Torniquete_01" unique_id=588362795]
+shape = SubResource("Box_Torniquete")
+
+[node name="Torniquete_02" type="StaticBody3D" parent="Colision" unique_id=365927942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Torniquete_02" unique_id=1628988702]
+shape = SubResource("Box_Torniquete")
+
+[node name="Torniquete_03" type="StaticBody3D" parent="Colision" unique_id=1119495536]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Torniquete_03" unique_id=932411406]
+shape = SubResource("Box_Torniquete")
+
+[node name="Torniquete_04" type="StaticBody3D" parent="Colision" unique_id=1250993449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Torniquete_04" unique_id=7618502]
+shape = SubResource("Box_Torniquete")
+
+[node name="Torniquete_05" type="StaticBody3D" parent="Colision" unique_id=2059257774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.5, -5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Torniquete_05" unique_id=1775658577]
+shape = SubResource("Box_Torniquete")
+
+[node name="Boleteria" type="StaticBody3D" parent="Colision" unique_id=207459050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.1, -3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Boleteria" unique_id=1090599618]
+shape = SubResource("Box_Servicio")
+
+[node name="Bibliometro" type="StaticBody3D" parent="Colision" unique_id=1411899675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.1, -3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Bibliometro" unique_id=1112953748]
+shape = SubResource("Box_Servicio")
+
+[node name="LocalComercial" type="StaticBody3D" parent="Colision" unique_id=1565796569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.1, 3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/LocalComercial" unique_id=575233544]
+shape = SubResource("Box_Servicio")
+
+[node name="EscaleraTramo1" type="StaticBody3D" parent="Colision" unique_id=574966393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.25, 16)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramo1" unique_id=1696820387]
+shape = SubResource("Box_EscaleraTramo")
+
+[node name="Descanso" type="StaticBody3D" parent="Colision" unique_id=2122523988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.5, 19)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Descanso" unique_id=1898473911]
+shape = SubResource("Box_Descanso")
+
+[node name="EscaleraTramo2" type="StaticBody3D" parent="Colision" unique_id=1359954278]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 21)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramo2" unique_id=559022805]
+shape = SubResource("Box_EscaleraTramo")
+
+[node name="PasilloL5" type="StaticBody3D" parent="Colision" unique_id=2061417148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 4)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5" unique_id=1526897125]
+shape = SubResource("Box_PasilloL5")
+
+[node name="EscaleraL5" type="StaticBody3D" parent="Colision" unique_id=1946063599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -5, 10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5" unique_id=516961249]
+shape = SubResource("Box_EscaleraL5")
+
+[node name="PisoAndenL5" type="StaticBody3D" parent="Colision" unique_id=1034050806]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -10, 20)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PisoAndenL5" unique_id=934959947]
+shape = SubResource("Box_PisoAndenL5")
+
+[node name="MuroLateralAndenL5Oeste" type="StaticBody3D" parent="Colision" unique_id=2012234449]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.25, -8, 20)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Oeste" unique_id=136654220]
+shape = SubResource("Box_MuroLateralAndenL5")
+
+[node name="MuroLateralAndenL5Este" type="StaticBody3D" parent="Colision" unique_id=1039885889]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, -8, 20)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Este" unique_id=2132491214]
+shape = SubResource("Box_MuroLateralAndenL5")
+
+[node name="RejaPlataformaL7" type="StaticBody3D" parent="Colision" unique_id=1589331835]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -8, 48)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaPlataformaL7" unique_id=1938371459]
+shape = SubResource("Box_RejaL7")

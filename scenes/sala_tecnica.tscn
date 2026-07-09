@@ -73,3 +73,60 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ParedDer_Collider"]
 shape = SubResource("BoxShape3D_pared_der")
+
+[node name="Tuberias" type="Node3D" parent="."]
+
+[node name="Tuberia1" type="CSGCylinder3D" parent="Tuberias"]
+transform = Transform3D(1, 0, 0, 0, 0.1, 1, 0, -1, 0.1, -3, 2.5, 0)
+radius = 0.15
+height = 6.0
+
+[node name="Tuberia2" type="CSGCylinder3D" parent="Tuberias"]
+transform = Transform3D(1, 0, 0, 0, 0.1, 1, 0, -1, 0.1, 0, 2.5, 0)
+radius = 0.12
+height = 6.0
+
+[node name="Tuberia3" type="CSGCylinder3D" parent="Tuberias"]
+transform = Transform3D(1, 0, 0, 0, 0.1, 1, 0, -1, 0.1, 3, 2.5, 0)
+radius = 0.1
+height = 6.0
+
+[node name="Carteles" type="Node3D" parent="."]
+
+[node name="Cartel_Salida" type="CSGBox3D" parent="Carteles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 2.5, -3.9)
+size = Vector3(1.5, 0.4, 0.05)
+
+[node name="Cartel_Peligro" type="CSGBox3D" parent="Carteles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 2.5, -3.9)
+size = Vector3(1.5, 0.4, 0.05)
+
+[node name="Luces_Emergencia" type="Node3D" parent="."]
+
+[node name="Luz_Emergencia1" type="OmniLight3D" parent="Luces_Emergencia"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.8, -3.8)
+light_energy_multiplier = 0.8
+omni_range = 3.0
+omni_attenuation = 2.0
+light_color = Color(1, 0.3, 0.2)
+
+[node name="Luz_Emergencia2" type="OmniLight3D" parent="Luces_Emergencia"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.8, -3.8)
+light_energy_multiplier = 0.8
+omni_range = 3.0
+omni_attenuation = 2.0
+light_color = Color(1, 0.3, 0.2)
+
+[node name="Luz_Emergencia3" type="OmniLight3D" parent="Luces_Emergencia"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.8, 3.8)
+light_energy_multiplier = 0.8
+omni_range = 3.0
+omni_attenuation = 2.0
+light_color = Color(1, 0.3, 0.2)
+
+[node name="Luz_Emergencia4" type="OmniLight3D" parent="Luces_Emergencia"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.8, 3.8)
+light_energy_multiplier = 0.8
+omni_range = 3.0
+omni_attenuation = 2.0
+light_color = Color(1, 0.3, 0.2)

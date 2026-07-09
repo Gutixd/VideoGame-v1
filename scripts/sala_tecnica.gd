@@ -25,3 +25,13 @@ func _apply_materials():
 
 	if has_node("ParedDerecha"):
 		$ParedDerecha.material = materials.create_hormigon()
+
+	# Aplicar metal oxidado a tuberías
+	if has_node("Tuberias"):
+		for tuberia in $Tuberias.get_children():
+			tuberia.material = materials.create_metal_oxidado()
+
+	# Aplicar rojo a carteles
+	if has_node("Carteles"):
+		for cartel in $Carteles.get_children():
+			cartel.material = materials.create_azulejo_rojo()

@@ -59,6 +59,20 @@ linea_cero/
 - Modelos: .glb (GLTF 2.0, lightweight)
 - Texturas: PBR (albedo + normal + roughness)
 
+### Pipeline de modelado (obligatorio a partir de And��n Baquedano)
+- **Toda la geometría 3D se modela en Blender, nunca con CSG directo en Godot.**
+- Cada mapa se genera con un script Python (`bpy`) ejecutado en modo headless: `blender --background --python script.py`
+- Cada script de mapa debe producir:
+  1. Archivo `.blend` fuente (editable, con colecciones organizadas por categoría: Arquitectura, Props, Iluminación, Señalética)
+  2. Exportación `.glb` (GLTF binario) lista para importar en Godot 4 sin retoques
+  3. Materiales asignados por submesh, UVs básicos correctos (sin overlaps, sin estiramiento)
+  4. Nombres de objetos profesionales y descriptivos (ej. `Columna_Estructural_01`, no `Cube.003`)
+  5. Pivotes/orígenes correctos (base del objeto para props que se paran en el piso, centro para elementos suspendidos)
+  6. Escala real 1:1 (1 unidad Blender = 1 metro = 1 unidad Godot)
+- Ubicación de scripts de generación: `blender_pipeline/<nombre_mapa>/generar_<nombre_mapa>.py`
+- Ubicación de salidas: `.blend` en `blender_pipeline/<nombre_mapa>/`, `.glb` final en `assets/models/<nombre_mapa>/`
+- Godot solo importa el `.glb` — no se debe editar geometría dentro del editor de Godot
+
 ### Control de versiones
 - Commits frecuentes (1 feature = 1 commit)
 - Mensajes claros: "Add player movement", "Implement sanity system decay"

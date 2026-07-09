@@ -3,14 +3,16 @@
 **Proyecto:** LÍNEA CERO
 **Zona:** 02 — Andén Baquedano
 **Autor:** Senior Level Designer / Environment Artist (documento de diseño)
-**Estado:** 🟢 Implementado (Blockout, Iluminación, Materiales, Props, Navegación, Gameplay, Audio placeholder) — ver sección 17
-**Versión:** 2.0 — escala real completa (ver errata de escala en sección 17)
+**Estado:** 🟠 Implementado como "andén genérico estilo L1", pero **NO es una recreación fiel de Baquedano real** — ver corrección crítica en sección 18
+**Versión:** 3.0 — corrección de investigación con fuentes reales verificadas (reemplaza estimaciones de la sección 0 original)
 
 ---
 
-## 0. Fuente de investigación (Fase 1)
+## 0. Fuente de investigación (Fase 1) — ⚠️ ACTUALIZADA, ver sección 18
 
 Basado en el estilo arquitectónico documentado de las estaciones originales de Metro de Santiago Línea 1 (1975): Los Héroes, Universidad de Chile, Salvador — comparables directas a Baquedano por pertenecer al mismo tramo y década constructiva. Ver tabla de hallazgos en el research previo a este documento. Toda medida sin fuente pública exacta está marcada **[ESTIMADO]**.
+
+**Esta sección se basó en estimación por analogía, sin verificar fuentes oficiales de Baquedano específicamente.** Una investigación posterior con fuentes reales (Metro.cl oficial, Wikipedia verificada, Wikimedia Commons) reveló que Baquedano es arquitectónicamente muy distinta de lo asumido aquí — no es un andén único de Línea 1, sino una estación de combinación L1↔L5 de 6 niveles. Ver sección 18 para el detalle completo y sus implicaciones sobre lo ya construido.
 
 ---
 
@@ -556,4 +558,40 @@ Probado de punta a punta con el MCP `godot-ai` (ejecución real del proyecto + c
 
 ---
 
-**FIN DEL DOCUMENTO — Fase 2 y Fase 3 (primera pasada) completas.**
+## 18. Corrección crítica de investigación (fuentes reales verificadas)
+
+Esta sección reemplaza la confianza depositada en la sección 0 (estimación por analogía). Se investigó con fuentes primarias reales: página oficial de Metro de Santiago (metro.cl), Wikipedia (verificada, no solo recordada de memoria), y el inventario de 102 archivos de Wikimedia Commons categoría "Baquedano station". El detalle completo de fuentes y el checklist de fotografía queda en [`referencias_fotograficas/README.md`](../referencias_fotograficas/README.md).
+
+### 18.1 Lo que la sección 0 asumió incorrectamente
+
+| Asunción original (sección 0) | Realidad verificada |
+|---|---|
+| Andén único central (isla), estación de una sola línea | **Estación de combinación L1 ↔ L5**, con andenes de ambas líneas a **profundidades distintas** |
+| ~1 nivel de andén + accesos genéricos | **6 niveles totales**, distribución norte-sur y este-oeste |
+| Sin mención de hall/torniquetes | Existe un **nivel de combinación** dedicado (hall de transferencia) con ~200+ m² de arte mural, más torniquetes, boletería, ascensores |
+| Color identificador "estimado" sin verificar | No verificado aún con foto real de la franja actual — sigue pendiente, pero ahora hay 5 versiones históricas de la "Cenefa Metro Baquedano" en Wikimedia Commons para comparar |
+| Sin contexto histórico | La estación fue **incendiada el 25 de octubre de 2019** (protestas) y su acceso principal solo se reconstruyó completamente en **enero de 2024** — dato con potencial narrativo para el lore de LÍNEA CERO (el juego ocurre "hoy", con la estación ya reconstruida) |
+
+### 18.2 Datos técnicos reales confirmados
+
+- **Construcción:** Línea 1 (1977, tajo abierto/cut-and-cover, requirió desplazar temporalmente esculturas de Plaza Italia) — Línea 5 (1997, excavación subterránea profunda; se hallaron restos arqueológicos de saneamiento de Santiago de inicios del 1900)
+- **6 andenes/vías totales, solo 4 operativos** (L1 + L5) — **2 reservados para la futura Línea 7**, dato con excelente potencial narrativo (¿zona clausurada explorable en una expansión futura del juego?)
+- **4 accesos de superficie (A–D)**, uno con ascensor accesible
+- **4 ascensores** (1 de acceso + 3 de transferencia interna)
+- **Sistema eléctrico: 750V DC por riel guía** (tercer riel), no catenaria aérea — **confirma y refuerza** la señalética "PELIGRO ALTO VOLTAJE" ya implementada en Sala Técnica/Andén
+- Servicios reales: máquinas de carga Bip!, oficina de atención, cajero, tienda Maxi-K, **Bibliometro** (biblioteca dentro de zona paga), múltiples MetroArte ("La Bajada", "El Santiaguillo", mural "Ágora" de 400 m² de Javier Godoy sobre las escaleras de acceso al andén)
+- Horario real: L-V 6:00–21:00, sábado 7:00–21:00, domingo/festivos 8:00–21:00 — útil para justificar por qué la partida ocurre a la 1:37 AM (la estación real NO opera a esa hora, refuerza que algo anómalo permite el acceso)
+
+### 18.3 Implicación sobre lo ya construido (Fase 3)
+
+Lo implementado en las secciones 1–17 (andén único de 100 m, 17 columnas, sin hall ni L5 ni conexión) es funcionalmente una **estación genérica de Línea 1 "inspirada en" Baquedano**, no una recreación arquitectónica fiel. Esto es una decisión de diseño válida para un MVP de horror (el GDD prioriza atmósfera sobre precisión documental, sección 11), pero **debe quedar explícito y no presentado como fidelidad histórica completa**.
+
+**No se revierte ni se reconstruye en esta pasada** — el costo de agregar hall + L5 + conexión + torniquetes sería una nueva fase de producción completa (blockout → materiales → props → gameplay otra vez), y el nivel actual ya cumple su función narrativa del GDD (zona 02, 5-15 min, "andén vacío"). Se deja como **decisión pendiente para el productor**: ¿ampliar Andén Baquedano a la estación completa (hall + L5 + combinación), o mantener el andén único actual como simplificación deliberada y documentada?
+
+### 18.4 Checklist de fotografía de referencia
+
+Ver documento completo: [`referencias_fotograficas/README.md`](../referencias_fotograficas/README.md) — estructura de 12 carpetas (`01_Exterior` a `12_Iluminacion`), ~35-40 archivos ya identificables por nombre en Wikimedia Commons para descarga inmediata, y checklist priorizado de lo que requiere fotografía en persona (hall, escaleras, texturas perpendiculares, y accesos post-renovación 2024 no tienen cobertura online encontrada).
+
+---
+
+**FIN DEL DOCUMENTO — Fase 2, Fase 3 (primera pasada) y corrección de investigación completas.**

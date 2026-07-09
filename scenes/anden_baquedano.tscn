@@ -1,13 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://bsye2ov4621r1"]
+[gd_scene format=3 uid="uid://bsye2ov4621r1"]
 
-[ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_materiales.glb" id="GLB_materiales"]
-[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="PackedScene_player"]
+[ext_resource type="PackedScene" uid="uid://iu4eiva6u855" path="res://assets/models/anden_baquedano/anden_baquedano_materiales.glb" id="GLB_materiales"]
+[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://scenes/player.tscn" id="PackedScene_player"]
 
 [sub_resource type="Environment" id="Environment_anden"]
 background_mode = 1
-background_color = Color(0.015, 0.015, 0.018, 1.0)
+background_color = Color(0.015, 0.015, 0.018, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.15, 0.16, 0.18, 1.0)
+ambient_light_color = Color(0.15, 0.16, 0.18, 1)
 ambient_light_energy = 0.25
 
 [sub_resource type="BoxShape3D" id="Box_Piso"]
@@ -23,7 +23,10 @@ size = Vector3(7, 4.3, 0.5)
 size = Vector3(0.4, 4.3, 55)
 
 [sub_resource type="BoxShape3D" id="Box_RejaTunelEste"]
-size = Vector3(3.5, 2.0, 0.1)
+size = Vector3(3.5, 2, 0.1)
+
+[sub_resource type="BoxShape3D" id="Box_Descenso"]
+size = Vector3(1, 1.1, 2)
 
 [sub_resource type="BoxShape3D" id="Box_Columna"]
 size = Vector3(0.6, 4.3, 0.6)
@@ -32,232 +35,229 @@ size = Vector3(0.6, 4.3, 0.6)
 size = Vector3(2, 2.2, 2)
 
 [sub_resource type="BoxShape3D" id="Box_Barrera"]
-size = Vector3(0.3, 1.0, 0.6)
+size = Vector3(0.3, 1, 0.6)
 
-[sub_resource type="BoxShape3D" id="Box_Descenso"]
-size = Vector3(1.0, 1.1, 2.0)
+[node name="AndenBaquedano" type="Node3D" unique_id=144258183]
 
-[node name="AndenBaquedano" type="Node3D"]
+[node name="Geometria" parent="." unique_id=761118082 instance=ExtResource("GLB_materiales")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.14792061, -0.49420404, 0.38845575)
 
-[node name="Geometria" parent="." instance=ExtResource("GLB_materiales")]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1817797540]
 environment = SubResource("Environment_anden")
 
-[node name="Iluminacion" type="Node3D" parent="."]
+[node name="Iluminacion" type="Node3D" parent="." unique_id=154067669]
 
-[node name="Luz_Cornisa_01" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -24)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_01" type="OmniLight3D" parent="Iluminacion" unique_id=1526206054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -24)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_02" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -18)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_02" type="OmniLight3D" parent="Iluminacion" unique_id=437500723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -18)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_03" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -12)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_03" type="OmniLight3D" parent="Iluminacion" unique_id=1252678099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -12)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_04" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -6)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_04" type="OmniLight3D" parent="Iluminacion" unique_id=1906476510]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, -6)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_05" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_05" type="OmniLight3D" parent="Iluminacion" unique_id=466152972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 0)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_06" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 6)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_06" type="OmniLight3D" parent="Iluminacion" unique_id=595139710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 6)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_07" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 12)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_07" type="OmniLight3D" parent="Iluminacion" unique_id=1031980818]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 12)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_08" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 18)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_08" type="OmniLight3D" parent="Iluminacion" unique_id=1656523066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 18)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Cornisa_09" type="OmniLight3D" parent="Iluminacion"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 24)
-light_color = Color(1.0, 0.92, 0.8, 1.0)
-light_energy_multiplier = 1.2
-omni_range = 6.0
+[node name="Luz_Cornisa_09" type="OmniLight3D" parent="Iluminacion" unique_id=899614835]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 4, 24)
+light_color = Color(1, 0.92, 0.8, 1)
+light_energy = 5.0
+omni_range = 10.0
 
-[node name="Luz_Emergencia_01" type="OmniLight3D" parent="Iluminacion"]
+[node name="Luz_Emergencia_01" type="OmniLight3D" parent="Iluminacion" unique_id=423596480]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3.8, -24)
-light_color = Color(1.0, 0.15, 0.1, 1.0)
-light_energy_multiplier = 0.6
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
 omni_range = 4.0
 
-[node name="Luz_Emergencia_02" type="OmniLight3D" parent="Iluminacion"]
+[node name="Luz_Emergencia_02" type="OmniLight3D" parent="Iluminacion" unique_id=2065478592]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3.8, -24)
-light_color = Color(1.0, 0.15, 0.1, 1.0)
-light_energy_multiplier = 0.6
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
 omni_range = 4.0
 
-[node name="Luz_Emergencia_03" type="OmniLight3D" parent="Iluminacion"]
+[node name="Luz_Emergencia_03" type="OmniLight3D" parent="Iluminacion" unique_id=2028382496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3.8, 24)
-light_color = Color(1.0, 0.15, 0.1, 1.0)
-light_energy_multiplier = 0.6
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
 omni_range = 4.0
 
-[node name="Luz_Emergencia_04" type="OmniLight3D" parent="Iluminacion"]
+[node name="Luz_Emergencia_04" type="OmniLight3D" parent="Iluminacion" unique_id=839191434]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3.8, 24)
-light_color = Color(1.0, 0.15, 0.1, 1.0)
-light_energy_multiplier = 0.6
+light_color = Color(1, 0.15, 0.1, 1)
+light_energy = 1.5
 omni_range = 4.0
 
-[node name="Luz_Boca_Tunel_Oeste" type="SpotLight3D" parent="Iluminacion"]
+[node name="Luz_Boca_Tunel_Oeste" type="SpotLight3D" parent="Iluminacion" unique_id=124599011]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.75, 2.15, 27)
-light_color = Color(0.7, 0.75, 0.8, 1.0)
-light_energy_multiplier = 0.3
+light_color = Color(0.7, 0.75, 0.8, 1)
+light_energy = 2.0
 spot_range = 8.0
 spot_angle = 30.0
 
-[node name="Player" parent="." instance=ExtResource("PackedScene_player")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1.0, -26)
+[node name="Player" parent="." unique_id=2113404783 instance=ExtResource("PackedScene_player")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.5, 1, -25)
 
-[node name="Colision" type="Node3D" parent="."]
+[node name="Colision" type="Node3D" parent="." unique_id=61171055]
 
-[node name="Piso" type="StaticBody3D" parent="Colision"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="Piso" type="StaticBody3D" parent="Colision" unique_id=767750573]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Piso"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Piso" unique_id=1882465567]
 shape = SubResource("Box_Piso")
 
-[node name="MuroNorte" type="StaticBody3D" parent="Colision"]
+[node name="MuroNorte" type="StaticBody3D" parent="Colision" unique_id=1801338399]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -27.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorte"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorte" unique_id=1034239012]
 shape = SubResource("Box_MuroNorte")
 
-[node name="MuroSur" type="StaticBody3D" parent="Colision"]
+[node name="MuroSur" type="StaticBody3D" parent="Colision" unique_id=631062681]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 27.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSur"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSur" unique_id=1265530575]
 shape = SubResource("Box_MuroSur")
 
-[node name="MuroLateralOeste" type="StaticBody3D" parent="Colision"]
+[node name="MuroLateralOeste" type="StaticBody3D" parent="Colision" unique_id=997469940]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 2.15, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralOeste"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralOeste" unique_id=76940858]
 shape = SubResource("Box_MuroLateral")
 
-[node name="MuroLateralEste" type="StaticBody3D" parent="Colision"]
+[node name="MuroLateralEste" type="StaticBody3D" parent="Colision" unique_id=1881199530]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.15, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralEste"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralEste" unique_id=67630862]
 shape = SubResource("Box_MuroLateral")
 
-[node name="RejaTunelEste" type="StaticBody3D" parent="Colision"]
+[node name="RejaTunelEste" type="StaticBody3D" parent="Colision" unique_id=2105029479]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.25, -0.1, 27.6)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaTunelEste"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaTunelEste" unique_id=1403201888]
 shape = SubResource("Box_RejaTunelEste")
 
-[node name="DescensoVia" type="StaticBody3D" parent="Colision"]
+[node name="DescensoVia" type="StaticBody3D" parent="Colision" unique_id=1669017173]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, -0.3, 25)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/DescensoVia"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/DescensoVia" unique_id=623942118]
 shape = SubResource("Box_Descenso")
 
-[node name="Columna_01" type="StaticBody3D" parent="Colision"]
+[node name="Columna_01" type="StaticBody3D" parent="Colision" unique_id=807259472]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -24)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_01"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_01" unique_id=1208213660]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_02" type="StaticBody3D" parent="Colision"]
+[node name="Columna_02" type="StaticBody3D" parent="Colision" unique_id=1486940061]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -18)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_02"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_02" unique_id=483987887]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_03" type="StaticBody3D" parent="Colision"]
+[node name="Columna_03" type="StaticBody3D" parent="Colision" unique_id=1355372782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -12)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_03"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_03" unique_id=106401556]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_04" type="StaticBody3D" parent="Colision"]
+[node name="Columna_04" type="StaticBody3D" parent="Colision" unique_id=1356851269]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -6)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_04"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_04" unique_id=1351232082]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_05" type="StaticBody3D" parent="Colision"]
+[node name="Columna_05" type="StaticBody3D" parent="Colision" unique_id=690042483]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_05"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_05" unique_id=796689882]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_06" type="StaticBody3D" parent="Colision"]
+[node name="Columna_06" type="StaticBody3D" parent="Colision" unique_id=1106574202]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 6)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_06"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_06" unique_id=531271928]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_07" type="StaticBody3D" parent="Colision"]
+[node name="Columna_07" type="StaticBody3D" parent="Colision" unique_id=1526338197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 12)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_07"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_07" unique_id=182785819]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_08" type="StaticBody3D" parent="Colision"]
+[node name="Columna_08" type="StaticBody3D" parent="Colision" unique_id=615316292]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 18)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_08"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_08" unique_id=444863091]
 shape = SubResource("Box_Columna")
 
-[node name="Columna_09" type="StaticBody3D" parent="Colision"]
+[node name="Columna_09" type="StaticBody3D" parent="Colision" unique_id=41272459]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 24)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_09"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Columna_09" unique_id=97804633]
 shape = SubResource("Box_Columna")
 
-[node name="CasetaControl" type="StaticBody3D" parent="Colision"]
+[node name="CasetaControl" type="StaticBody3D" parent="Colision" unique_id=1831715052]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.1, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/CasetaControl"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/CasetaControl" unique_id=1018380423]
 shape = SubResource("Box_Caseta")
 
-[node name="Barrera_Oeste_Norte" type="StaticBody3D" parent="Colision"]
+[node name="Barrera_Oeste_Norte" type="StaticBody3D" parent="Colision" unique_id=1097212924]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0.5, -26)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Norte"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Norte" unique_id=920899201]
 shape = SubResource("Box_Barrera")
 
-[node name="Barrera_Este_Norte" type="StaticBody3D" parent="Colision"]
+[node name="Barrera_Este_Norte" type="StaticBody3D" parent="Colision" unique_id=1466373403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.5, -26)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Norte"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Norte" unique_id=1471789305]
 shape = SubResource("Box_Barrera")
 
-[node name="Barrera_Oeste_Sur" type="StaticBody3D" parent="Colision"]
+[node name="Barrera_Oeste_Sur" type="StaticBody3D" parent="Colision" unique_id=150493603]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0.5, 26)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Sur"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Oeste_Sur" unique_id=575088233]
 shape = SubResource("Box_Barrera")
 
-[node name="Barrera_Este_Sur" type="StaticBody3D" parent="Colision"]
+[node name="Barrera_Este_Sur" type="StaticBody3D" parent="Colision" unique_id=2005153844]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0.5, 26)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Sur"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/Barrera_Este_Sur" unique_id=1109336339]
 shape = SubResource("Box_Barrera")

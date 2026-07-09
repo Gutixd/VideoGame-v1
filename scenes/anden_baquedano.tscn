@@ -1,7 +1,104 @@
-[gd_scene load_steps=2 format=3 uid="uid://d1anden0baquedano01"]
+[gd_scene load_steps=3 format=3 uid="uid://bsye2ov4621r1"]
 
 [ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_blockout.glb" id="GLB_blockout"]
+
+[sub_resource type="Environment" id="Environment_anden"]
+background_mode = 1
+background_color = Color(0.015, 0.015, 0.018, 1.0)
+ambient_light_source = 2
+ambient_light_color = Color(0.15, 0.16, 0.18, 1.0)
+ambient_light_energy = 0.25
 
 [node name="AndenBaquedano" type="Node3D"]
 
 [node name="Blockout" parent="." instance=ExtResource("GLB_blockout")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_anden")
+
+[node name="Iluminacion" type="Node3D" parent="."]
+
+[node name="Luz_Cornisa_01" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -24)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_02" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -18)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_03" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -12)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_04" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, -6)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_05" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 0)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_06" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 6)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_07" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 12)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_08" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 18)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Cornisa_09" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.2, 24)
+light_color = Color(1.0, 0.92, 0.8, 1.0)
+light_energy_multiplier = 1.2
+omni_range = 6.0
+
+[node name="Luz_Emergencia_01" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3.8, -24)
+light_color = Color(1.0, 0.15, 0.1, 1.0)
+light_energy_multiplier = 0.6
+omni_range = 4.0
+
+[node name="Luz_Emergencia_02" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3.8, -24)
+light_color = Color(1.0, 0.15, 0.1, 1.0)
+light_energy_multiplier = 0.6
+omni_range = 4.0
+
+[node name="Luz_Emergencia_03" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 3.8, 24)
+light_color = Color(1.0, 0.15, 0.1, 1.0)
+light_energy_multiplier = 0.6
+omni_range = 4.0
+
+[node name="Luz_Emergencia_04" type="OmniLight3D" parent="Iluminacion"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 3.8, 24)
+light_color = Color(1.0, 0.15, 0.1, 1.0)
+light_energy_multiplier = 0.6
+omni_range = 4.0
+
+[node name="Luz_Boca_Tunel_Oeste" type="SpotLight3D" parent="Iluminacion"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.75, 2.15, 27)
+light_color = Color(0.7, 0.75, 0.8, 1.0)
+light_energy_multiplier = 0.3
+spot_range = 8.0
+spot_angle = 30.0

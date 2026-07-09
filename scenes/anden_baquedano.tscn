@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1anden0baquedano01"]
+
+[ext_resource type="PackedScene" path="res://assets/models/anden_baquedano/anden_baquedano_blockout.glb" id="GLB_blockout"]
+
+[node name="AndenBaquedano" type="Node3D"]
+
+[node name="Blockout" parent="." instance=ExtResource("GLB_blockout")]

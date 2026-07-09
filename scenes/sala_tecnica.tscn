@@ -1,4 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8"]
+[gd_scene load_steps=7 format=3 uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8"]
+
+[ext_resource type="Script" path="res://scripts/sala_tecnica.gd" id="Script_sala"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_piso"]
 size = Vector3(12, 1.0, 10)
@@ -16,6 +18,7 @@ size = Vector3(0.5, 4, 8)
 size = Vector3(0.5, 4, 8)
 
 [node name="SalaTecnica" type="Node3D"]
+script = ExtResource("Script_sala")
 
 [node name="PisoCollider" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)

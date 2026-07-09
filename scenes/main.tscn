@@ -1,9 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b1w4x8p9d2mk7l4j5n8q3r0t"]
+[gd_scene load_steps=2 format=3 uid="uid://b1w4x8p9d2mk7l4j5n8q3r0t"]
 
 [ext_resource type="PackedScene" uid="uid://db7pqpqh76c3n8p95pqw9d1t" path="res://scenes/player.tscn"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_default"]
-size = Vector3(20, 1, 20)
+[ext_resource type="PackedScene" uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8" path="res://scenes/sala_tecnica.tscn"]
 
 [node name="Main" type="Node3D"]
 
@@ -11,16 +9,9 @@ size = Vector3(20, 1, 20)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 5, 0)
-light_energy_multiplier = 1.5
+light_energy_multiplier = 2.0
 
 [node name="Player" parent="." instance=ExtResource("db7pqpqh76c3n8p95pqw9d1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2)
 
-[node name="Ground" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("BoxShape3D_default")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = BoxMesh.new()
+[node name="SalaTecnica" parent="." instance=ExtResource("uid://c8p3q7h5j2k9n4m1b5v6x7y8")]

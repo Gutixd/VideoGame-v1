@@ -3,8 +3,8 @@
 **Proyecto:** LÍNEA CERO
 **Zona:** 01B — Hall de Combinación Baquedano (L1 ↔ L5)
 **Autor:** Senior Level Designer / Environment Artist (documento de diseño)
-**Estado:** 🟡 Pendiente de aprobación — NO IMPLEMENTAR hasta visto bueno
-**Versión:** 1.0
+**Estado:** 🟢 Implementado y en corrección activa de circulación — ver sección 16
+**Versión:** 1.1 — corrección de circulación (pasillo/escalera L5 sólidos, muro sur sin vanos)
 
 ---
 
@@ -443,6 +443,32 @@ linea_cero/
 
 ---
 
-**FIN DEL DOCUMENTO — Fase 2 completa.**
+## 16. Corrección de circulación (el jugador no podía recorrer toda la estación)
 
-Según el proceso establecido, corresponde ahora **esperar aprobación** antes de iniciar la Fase 3 (Implementación: blockout → iluminación → materiales → props → audio → navegación → gameplay en Blender/Godot, en ese orden, sin mezclar fases).
+El productor reportó que faltaban "muchos pasillos, pasadizos y escaleras" para recorrer la estación completa. Auditando la implementación existente (no solo revisando coordenadas, sino caminando con `game_manage.input_action`, la misma disciplina adoptada en la sección 19 de `MAPA_AndenBaquedano.md`) se confirmaron dos problemas reales:
+
+### 16.1 Pasillo y escalera hacia Andén L5 eran bloques sólidos, no arquitectura hueca
+
+`BLOCK_Pasillo_L5` y `BLOCK_Escalera_L5` se habían modelado en el blockout original como cajas sólidas de volumen completo (un solo `crear_caja` cada uno, sin separar piso/muros/techo). Al caminar, el jugador chocaba contra la cara norte del pasillo y no podía entrar — la rama completa hacia Línea 5 nunca fue jugable, solo estaba "dibujada".
+
+**Fix:**
+- `Pasillo_L5` reconstruido como corredor hueco real: piso, techo y 2 muros laterales independientes (4×4×8m).
+- `Escalera_L5` reconstruida como 4 tramos de 2.5m + 3 descansos (mismo patrón ya validado en la escalera hacia Andén_A/B), para cubrir el desnivel de 10m con una pendiente caminable — antes era un solo bloque de 6m de largo para 10m de caída, físicamente imposible de subir/bajar.
+- El Andén L5 se reubicó de Z=20 (centro) a Z=60 (centro) para dar espacio a los 4 tramos; todas las luces de esa zona se reposicionaron en consecuencia.
+- La reja de la plataforma reservada Línea 7 se ensanchó de 3.5m a 7m (todo el ancho del andén) porque antes dejaba huecos a los costados por donde el jugador podía caer al vacío más allá de la geometría modelada.
+
+**Verificado caminando** (spawn de prueba en el pasillo, `move_forward` simulado): recorrido continuo Hall → Pasillo L5 → 4 tramos de escalera → Andén L5 → tope contra la reja L7, sin caídas ni bloqueos, de extremo a extremo.
+
+### 16.2 Muro sur del Hall sin colisión asignada
+
+`BLOCK_Muro_Sur_Hall` existía como geometría visual (una sola losa de 34m) pero **nunca tuvo un `StaticBody3D`/`CollisionShape3D` correspondiente** en `hall_combinacion_l5.tscn` — es decir, todo el límite sur del Hall era atravesable sin colisión (visualmente inconsistente, aunque no bloqueaba el paso).
+
+**Fix:** se reconstruyó como 4 segmentos con colisión real (`MuroSurHallA/B/C/D`), dejando 3 vanos de 4m alineados exactamente con la escalera hacia Andén_A (X=0), la escalera hacia Andén_B (X=14) y el pasillo hacia L5 (X=20).
+
+### 16.3 Hallazgo pendiente de investigar (no resuelto en esta pasada)
+
+Al probar un recorrido continuo desde el Hall (Z=8) hacia Andén_A caminando en línea recta sin detenerse, el jugador terminó en una caída libre prolongada (Y≈-875 cerca de Z≈49 en coordenadas de mundo) en vez de aterrizar sobre el piso del andén. Los tramos de escalera hacia Andén_A (`EscaleraTramo1/Descanso/EscaleraTramo2/Conexion_AndenA`) habían sido verificados antes solo con recorridos cortos ya posicionados a mitad de camino (sección 19.2/19.4 de `MAPA_AndenBaquedano.md`), nunca con un descenso completo desde arriba. Sospecha principal: un desnivel no continuo entre el tramo final de la escalera (tope en Y=-2.5) y `Conexion_AndenA`/`Piso` del andén (tope en Y≈-4.9), un salto de ~2.4m sin tramo intermedio. **No se corrigió en esta pasada** porque el editor de Godot estaba siendo usado en paralelo por otra sesión (construyendo Plaza Maipú) y no fue posible completar el diagnóstico con pruebas en vivo sin interferir. Queda como acción inmediata de la siguiente pasada.
+
+---
+
+**FIN DEL DOCUMENTO — Fase 2 completa, Fase 3 en corrección activa de circulación.**

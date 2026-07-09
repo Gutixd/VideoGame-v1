@@ -31,11 +31,11 @@ size = Vector3(4, 2.5, 4)
 [sub_resource type="BoxShape3D" id="Box_Descanso"]
 size = Vector3(4, 0.2, 2)
 
-[sub_resource type="BoxShape3D" id="Box_PasilloL5"]
-size = Vector3(4, 4, 8)
+[sub_resource type="BoxShape3D" id="Box_PasilloL5_PisoTecho"]
+size = Vector3(4, 0.2, 8)
 
-[sub_resource type="BoxShape3D" id="Box_EscaleraL5"]
-size = Vector3(4, 10, 6)
+[sub_resource type="BoxShape3D" id="Box_PasilloL5_Muro"]
+size = Vector3(0.2, 4, 8)
 
 [sub_resource type="BoxShape3D" id="Box_PisoAndenL5"]
 size = Vector3(7, 0.2, 60)
@@ -44,7 +44,13 @@ size = Vector3(7, 0.2, 60)
 size = Vector3(0.5, 4, 60)
 
 [sub_resource type="BoxShape3D" id="Box_RejaL7"]
-size = Vector3(3.5, 3, 0.1)
+size = Vector3(7, 3, 0.3)
+
+[sub_resource type="BoxShape3D" id="Box_MuroSurHall_A"]
+size = Vector3(8, 4.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_MuroSurHall_B"]
+size = Vector3(10, 4.5, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vsuft"]
 size = Vector3(4, 2.5, 4)
@@ -115,20 +121,32 @@ light_color = Color(0.9, 0.9, 0.95, 1)
 light_energy = 2.5
 omni_range = 6.0
 
+[node name="Luz_Escalera_L5_01" type="OmniLight3D" parent="Iluminacion" unique_id=390105085]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.5, 10)
+light_color = Color(0.9, 0.9, 0.95, 1)
+light_energy = 2.5
+omni_range = 6.0
+
+[node name="Luz_Escalera_L5_02" type="OmniLight3D" parent="Iluminacion" unique_id=390105086]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -6.5, 25)
+light_color = Color(0.9, 0.9, 0.95, 1)
+light_energy = 2.5
+omni_range = 6.0
+
 [node name="Luz_AndenL5_01" type="OmniLight3D" parent="Iluminacion" unique_id=390105088]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -6.5, 38)
 light_color = Color(0.8, 0.85, 0.95, 1)
 light_energy = 2.5
 omni_range = 8.0
 
 [node name="Luz_AndenL5_02" type="OmniLight3D" parent="Iluminacion" unique_id=1944005587]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, 15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -6.5, 55)
 light_color = Color(0.8, 0.85, 0.95, 1)
 light_energy = 2.0
 omni_range = 8.0
 
 [node name="Luz_AndenL5_03" type="OmniLight3D" parent="Iluminacion" unique_id=720971882]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -6.5, 30)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -6.5, 70)
 light_color = Color(0.7, 0.75, 0.85, 1)
 light_energy = 1.2
 omni_range = 7.0
@@ -252,41 +270,119 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 21)
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramo2" unique_id=559022805]
 shape = SubResource("Box_EscaleraTramo")
 
-[node name="PasilloL5" type="StaticBody3D" parent="Colision" unique_id=2061417148]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4)
+[node name="PasilloL5Piso" type="StaticBody3D" parent="Colision" unique_id=2061417148]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -0.1, 4)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5" unique_id=1526897125]
-shape = SubResource("Box_PasilloL5")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5Piso" unique_id=1526897125]
+shape = SubResource("Box_PasilloL5_PisoTecho")
 
-[node name="EscaleraL5" type="StaticBody3D" parent="Colision" unique_id=1946063599]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -5, 10)
+[node name="PasilloL5Techo" type="StaticBody3D" parent="Colision" unique_id=2061417149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 3.9, 4)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5" unique_id=516961249]
-shape = SubResource("Box_EscaleraL5")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5Techo" unique_id=1526897126]
+shape = SubResource("Box_PasilloL5_PisoTecho")
+
+[node name="PasilloL5MuroOeste" type="StaticBody3D" parent="Colision" unique_id=2061417150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 18, 2, 4)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5MuroOeste" unique_id=1526897127]
+shape = SubResource("Box_PasilloL5_Muro")
+
+[node name="PasilloL5MuroEste" type="StaticBody3D" parent="Colision" unique_id=2061417151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2, 4)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5MuroEste" unique_id=1526897128]
+shape = SubResource("Box_PasilloL5_Muro")
+
+[node name="EscaleraL5Tramo1" type="StaticBody3D" parent="Colision" unique_id=1946063599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -1.25, 10)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Tramo1" unique_id=516961249]
+shape = SubResource("Box_EscaleraTramo")
+
+[node name="EscaleraL5Descanso1" type="StaticBody3D" parent="Colision" unique_id=1946063600]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -2.5, 13)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Descanso1" unique_id=516961250]
+shape = SubResource("Box_Descanso")
+
+[node name="EscaleraL5Tramo2" type="StaticBody3D" parent="Colision" unique_id=1946063601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -3.75, 16)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Tramo2" unique_id=516961251]
+shape = SubResource("Box_EscaleraTramo")
+
+[node name="EscaleraL5Descanso2" type="StaticBody3D" parent="Colision" unique_id=1946063602]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -5.0, 19)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Descanso2" unique_id=516961252]
+shape = SubResource("Box_Descanso")
+
+[node name="EscaleraL5Tramo3" type="StaticBody3D" parent="Colision" unique_id=1946063603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -6.25, 22)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Tramo3" unique_id=516961253]
+shape = SubResource("Box_EscaleraTramo")
+
+[node name="EscaleraL5Descanso3" type="StaticBody3D" parent="Colision" unique_id=1946063604]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -7.5, 25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Descanso3" unique_id=516961254]
+shape = SubResource("Box_Descanso")
+
+[node name="EscaleraL5Tramo4" type="StaticBody3D" parent="Colision" unique_id=1946063605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -8.75, 28)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5Tramo4" unique_id=516961255]
+shape = SubResource("Box_EscaleraTramo")
 
 [node name="PisoAndenL5" type="StaticBody3D" parent="Colision" unique_id=1034050806]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -10, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -10, 60)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PisoAndenL5" unique_id=934959947]
 shape = SubResource("Box_PisoAndenL5")
 
 [node name="MuroLateralAndenL5Oeste" type="StaticBody3D" parent="Colision" unique_id=2012234449]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, -8, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, -8, 60)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Oeste" unique_id=136654220]
 shape = SubResource("Box_MuroLateralAndenL5")
 
 [node name="MuroLateralAndenL5Este" type="StaticBody3D" parent="Colision" unique_id=1039885889]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.75, -8, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.75, -8, 60)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Este" unique_id=2132491214]
 shape = SubResource("Box_MuroLateralAndenL5")
 
 [node name="RejaPlataformaL7" type="StaticBody3D" parent="Colision" unique_id=1589331835]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -8, 48)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -8, 88)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaPlataformaL7" unique_id=1938371459]
 shape = SubResource("Box_RejaL7")
+
+[node name="MuroSurHallA" type="StaticBody3D" parent="Colision" unique_id=1589331836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 2.25, 12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurHallA" unique_id=1938371460]
+shape = SubResource("Box_MuroSurHall_A")
+
+[node name="MuroSurHallB" type="StaticBody3D" parent="Colision" unique_id=1589331837]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.25, 12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurHallB" unique_id=1938371461]
+shape = SubResource("Box_MuroSurHall_B")
+
+[node name="MuroSurHallC" type="StaticBody3D" parent="Colision" unique_id=1589331838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 2.25, 12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurHallC" unique_id=1938371462]
+shape = SubResource("BoxShape3D_m06mu")
+
+[node name="MuroSurHallD" type="StaticBody3D" parent="Colision" unique_id=1589331839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23, 2.25, 12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroSurHallD" unique_id=1938371463]
+shape = SubResource("BoxShape3D_m06mu")
 
 [node name="EscaleraTramoB1" type="StaticBody3D" parent="Colision" unique_id=1097706231]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -1.25, 16)

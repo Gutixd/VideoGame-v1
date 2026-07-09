@@ -113,8 +113,18 @@ def generar():
                pos_doc=(-9, 2.25, -12.5), size_doc=(2, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Norte_Hall_Este", col_blockout,
                pos_doc=(10, 2.25, -12.5), size_doc=(28, 4.5, 0.5))
-    crear_caja("BLOCK_Muro_Sur_Hall", col_blockout,
-               pos_doc=(7, 2.25, 12.5), size_doc=(34, 4.5, 0.5))
+    # Muro sur en 4 piezas, con 3 vanos reales (antes era una sola losa
+    # solida de 34m sin colision asignada en Godot -- nunca bloqueaba ni
+    # dejaba pasar correctamente). Vanos de 4m en X=0 (escalera Anden_A),
+    # X=14 (escalera Anden_B) y X=20 (pasillo Linea 5).
+    crear_caja("BLOCK_Muro_Sur_Hall_A", col_blockout,
+               pos_doc=(-6, 2.25, 12.5), size_doc=(8, 4.5, 0.5))
+    crear_caja("BLOCK_Muro_Sur_Hall_B", col_blockout,
+               pos_doc=(7, 2.25, 12.5), size_doc=(10, 4.5, 0.5))
+    crear_caja("BLOCK_Muro_Sur_Hall_C", col_blockout,
+               pos_doc=(17, 2.25, 12.5), size_doc=(2, 4.5, 0.5))
+    crear_caja("BLOCK_Muro_Sur_Hall_D", col_blockout,
+               pos_doc=(23, 2.25, 12.5), size_doc=(2, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Este_Hall", col_blockout,
                pos_doc=(24, 2.25, 0), size_doc=(0.5, 4.5, 25))
     crear_caja("BLOCK_Muro_Oeste_Hall", col_blockout,
@@ -160,26 +170,61 @@ def generar():
                pos_doc=(14, -5.0, 23), size_doc=(4, 0.2, 1))
 
     # --- Bifurcacion y descenso hacia Anden L5 ([ESTIMADO]) ----------------
-    # Reubicada de X=12 a X=20 para no superponerse con la segunda
-    # escalera (Anden_B) agregada en X=14.
-    crear_caja("BLOCK_Pasillo_L5", col_blockout,
-               pos_doc=(20, 0, 4), size_doc=(4, 4, 8))
-    crear_caja("BLOCK_Escalera_L5", col_blockout,
-               pos_doc=(20, -5, 10), size_doc=(4, 10, 6))
+    # CORRECCION: en la v1, Pasillo_L5 y Escalera_L5 se modelaron como
+    # cajas SOLIDAS (volumenes de bloqueo, no arquitectura hueca). Al
+    # verificar caminando (ver seccion 19.x del MAPA_AndenBaquedano.md)
+    # se confirmo que esto dejaba la rama L5 completamente inaccesible:
+    # el jugador chocaba contra la cara norte de Pasillo_L5 sin poder
+    # entrar. Se reconstruye como piso+muros+techo real, igual que el
+    # resto de la estacion, y la escalera pasa a 4 tramos de 2.5m (igual
+    # patron que la escalera hacia Anden_A/B) para cubrir el desnivel de
+    # 10m con una pendiente caminable.
+
+    # Pasillo L5 (hueco): X=20, Z=0 a 8, nivel del Hall (Y=0)
+    crear_caja("BLOCK_Pasillo_L5_Piso", col_blockout,
+               pos_doc=(20, -0.1, 4), size_doc=(4, 0.2, 8))
+    crear_caja("BLOCK_Pasillo_L5_Techo", col_blockout,
+               pos_doc=(20, 3.9, 4), size_doc=(4, 0.2, 8))
+    crear_caja("BLOCK_Pasillo_L5_Muro_Oeste", col_blockout,
+               pos_doc=(18, 2, 4), size_doc=(0.2, 4, 8))
+    crear_caja("BLOCK_Pasillo_L5_Muro_Este", col_blockout,
+               pos_doc=(22, 2, 4), size_doc=(0.2, 4, 8))
+
+    # Escalera L5: 4 tramos de 2.5m + 3 descansos, Z=8 a Z=30, hasta Y=-10
+    crear_caja("BLOCK_Escalera_L5_Tramo1", col_blockout,
+               pos_doc=(20, -1.25, 10), size_doc=(4, 2.5, 4))
+    crear_caja("BLOCK_Escalera_L5_Descanso1", col_blockout,
+               pos_doc=(20, -2.5, 13), size_doc=(4, 0.2, 2))
+    crear_caja("BLOCK_Escalera_L5_Tramo2", col_blockout,
+               pos_doc=(20, -3.75, 16), size_doc=(4, 2.5, 4))
+    crear_caja("BLOCK_Escalera_L5_Descanso2", col_blockout,
+               pos_doc=(20, -5.0, 19), size_doc=(4, 0.2, 2))
+    crear_caja("BLOCK_Escalera_L5_Tramo3", col_blockout,
+               pos_doc=(20, -6.25, 22), size_doc=(4, 2.5, 4))
+    crear_caja("BLOCK_Escalera_L5_Descanso3", col_blockout,
+               pos_doc=(20, -7.5, 25), size_doc=(4, 0.2, 2))
+    crear_caja("BLOCK_Escalera_L5_Tramo4", col_blockout,
+               pos_doc=(20, -8.75, 28), size_doc=(4, 2.5, 4))
 
     # --- Anden L5 (60m, perfil moderno -- ver seccion 0 del doc) -----------
+    # Reubicado de Z=20 (centro) a Z=60 (centro), es decir Z=30 a Z=90,
+    # para dejar espacio a los 4 tramos de escalera (antes terminaba en
+    # Z=13 con un desnivel de 10m imposible de caminar en solo 6m).
     crear_caja("BLOCK_Piso_AndenL5", col_blockout,
-               pos_doc=(20, -10, 20), size_doc=(7, 0.2, 60))
+               pos_doc=(20, -10, 60), size_doc=(7, 0.2, 60))
     crear_caja("BLOCK_Techo_AndenL5", col_blockout,
-               pos_doc=(20, -6, 20), size_doc=(14, 0.2, 60))
+               pos_doc=(20, -6, 60), size_doc=(14, 0.2, 60))
     crear_caja("BLOCK_Muro_Lateral_AndenL5_Oeste", col_blockout,
-               pos_doc=(16.25, -8, 20), size_doc=(0.5, 4, 60))
+               pos_doc=(16.25, -8, 60), size_doc=(0.5, 4, 60))
     crear_caja("BLOCK_Muro_Lateral_AndenL5_Este", col_blockout,
-               pos_doc=(23.75, -8, 20), size_doc=(0.5, 4, 60))
+               pos_doc=(23.75, -8, 60), size_doc=(0.5, 4, 60))
 
     # --- Reja de plataforma reservada Linea 7 (dato real confirmado) ------
+    # Ancho ampliado a 7m (todo el andén) para que bloquee de verdad el
+    # paso -- antes (3.5m) dejaba espacio libre a los costados y el
+    # jugador podia caer al vacio mas alla del piso modelado.
     crear_caja("BLOCK_Reja_PlataformaL7", col_blockout,
-               pos_doc=(20, -8, 48), size_doc=(3.5, 3, 0.1))
+               pos_doc=(20, -8, 88), size_doc=(7, 3, 0.3))
 
     print(f"[LINEA CERO] Blockout Hall+L5 generado: {len(col_blockout.objects)} objetos")
 

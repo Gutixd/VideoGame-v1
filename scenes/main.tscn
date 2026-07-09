@@ -1,7 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1w4x8p9d2mk7l4j5n8q3r0t"]
+[gd_scene load_steps=3 format=3 uid="uid://b1w4x8p9d2mk7l4j5n8q3r0t"]
 
-[ext_resource type="PackedScene" uid="uid://db7pqpqh76c3n8p95pqw9d1t" path="res://scenes/player.tscn"]
-[ext_resource type="PackedScene" uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8" path="res://scenes/sala_tecnica.tscn"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="PackedScene_player"]
+[ext_resource type="PackedScene" path="res://scenes/sala_tecnica.tscn" id="PackedScene_sala"]
 
 [node name="Main" type="Node3D"]
 
@@ -11,7 +11,7 @@
 transform = Transform3D(0.707107, 0.5, -0.5, 0, 0.707107, 0.707107, 0.707107, -0.5, 0.5, 0, 5, 0)
 light_energy_multiplier = 2.0
 
-[node name="Player" parent="." instance=ExtResource("db7pqpqh76c3n8p95pqw9d1t")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -2)
+[node name="Player" parent="." instance=ExtResource("PackedScene_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
-[node name="SalaTecnica" parent="." instance=ExtResource("uid://c8p3q7h5j2k9n4m1b5v6x7y8")]
+[node name="SalaTecnica" parent="." instance=ExtResource("PackedScene_sala")]

@@ -2,41 +2,26 @@
 
 [node name="SalaTecnica" type="Node3D"]
 
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+[node name="Piso" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+size = Vector3(10, 1, 8)
 
-[node name="Piso" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-size = Vector3(8, 0.2, 6)
-material = StandardMaterial3D.new()
+[node name="Techo" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+size = Vector3(10, 0.5, 8)
 
-[node name="TechoFondo" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-size = Vector3(8, 0.2, 6)
+[node name="ParedFrente" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -4)
+size = Vector3(10, 4, 0.5)
 
-[node name="ParedFrente" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3)
-size = Vector3(8, 3, 0.2)
+[node name="ParedFondo" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 4)
+size = Vector3(10, 4, 0.5)
 
-[node name="ParedFondo" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3)
-size = Vector3(8, 3, 0.2)
+[node name="ParedIzquierda" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2, 0)
+size = Vector3(0.5, 4, 8)
 
-[node name="ParedIzquierda" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, 0)
-size = Vector3(0.2, 3, 6)
-
-[node name="ParedDerecha" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.5, 0)
-size = Vector3(0.2, 3, 6)
-
-[node name="Escritorio" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.8, 0)
-size = Vector3(1.5, 0.8, 0.8)
-
-[node name="Estanteria" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5, 1.2, 1.5)
-size = Vector3(1.5, 2, 0.4)
-
-[node name="Puerta" type="CSGBox3D" parent="CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -2.9)
-size = Vector3(1.5, 2.2, 0.1)
+[node name="ParedDerecha" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 2, 0)
+size = Vector3(0.5, 4, 8)

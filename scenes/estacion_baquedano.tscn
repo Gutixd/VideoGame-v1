@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://bi2rsqne40a5y"]
 
-[ext_resource type="Script" path="res://scripts/environment_transition.gd" id="3_wyfrw"]
+[ext_resource type="Script" uid="uid://dprax1ojh4xjb" path="res://scripts/environment_transition.gd" id="3_wyfrw"]
+[ext_resource type="PackedScene" uid="uid://b1alnlhuy6ser" path="res://scenes/sala_tecnica.tscn" id="4_bh6bq"]
+[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://scenes/player.tscn" id="5_xy3w0"]
 [ext_resource type="PackedScene" uid="uid://bsye2ov4621r1" path="res://scenes/anden_baquedano.tscn" id="AndenL1"]
 [ext_resource type="PackedScene" uid="uid://bcu5pkkfg1l5y" path="res://scenes/hall_combinacion_l5.tscn" id="Hall"]
 
@@ -31,3 +33,9 @@ world_environment_path = NodePath("../WorldEnvironment")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ZonaTransicionHallAnden" unique_id=1877114494]
 shape = SubResource("BoxShape3D_bh6bq")
+
+[node name="SalaTecnica" parent="." unique_id=1378372600 instance=ExtResource("4_bh6bq")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6, 0, -16.5)
+
+[node name="Player" parent="." unique_id=2096588846 groups=["player"] instance=ExtResource("5_xy3w0")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6, 0.9, -16.5)

@@ -106,8 +106,13 @@ def generar():
                pos_doc=(7, 0, 0), size_doc=(34, 0.2, 25))
     crear_caja("BLOCK_Techo_Hall", col_blockout,
                pos_doc=(7, 4.5, 0), size_doc=(34, 0.2, 25))
-    crear_caja("BLOCK_Muro_Norte_Hall", col_blockout,
-               pos_doc=(7, 2.25, -12.5), size_doc=(34, 4.5, 0.5))
+    # Muro norte en dos piezas, con hueco en X=-6 para la conexion con
+    # Sala Tecnica (acceso de mantenimiento, elemento 01 de la seccion 3
+    # del doc). Hueco de 4m: de X=-8 a X=-4.
+    crear_caja("BLOCK_Muro_Norte_Hall_Oeste", col_blockout,
+               pos_doc=(-9, 2.25, -12.5), size_doc=(2, 4.5, 0.5))
+    crear_caja("BLOCK_Muro_Norte_Hall_Este", col_blockout,
+               pos_doc=(10, 2.25, -12.5), size_doc=(28, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Sur_Hall", col_blockout,
                pos_doc=(7, 2.25, 12.5), size_doc=(34, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Este_Hall", col_blockout,

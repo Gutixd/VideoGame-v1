@@ -5,8 +5,8 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_piso"]
 size = Vector3(12, 1, 10)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_pared_frente"]
-size = Vector3(10, 3, 0.5)
+[sub_resource type="BoxShape3D" id="BoxShape3D_7kht8"]
+size = Vector3(4, 3, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pared_fondo"]
 size = Vector3(10, 3, 0.5)
@@ -16,6 +16,9 @@ size = Vector3(0.5, 3, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pared_der"]
 size = Vector3(0.5, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4kof1"]
+size = Vector3(4, 3, 0.5)
 
 [node name="SalaTecnica" type="Node3D" unique_id=1378372600]
 script = ExtResource("Script_sala")
@@ -49,11 +52,11 @@ size = Vector3(0.5, 3, 8)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 0)
 size = Vector3(0.5, 3, 8)
 
-[node name="ParedFrente_Collider" type="StaticBody3D" parent="." unique_id=1380592176]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
+[node name="ParedFrenteIzq_Collider" type="StaticBody3D" parent="." unique_id=1380592176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 1.5, -4)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFrente_Collider" unique_id=695004105]
-shape = SubResource("BoxShape3D_pared_frente")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFrenteIzq_Collider" unique_id=695004105]
+shape = SubResource("BoxShape3D_7kht8")
 
 [node name="ParedFondo_Collider" type="StaticBody3D" parent="." unique_id=1490072396]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
@@ -166,3 +169,9 @@ omni_attenuation = 2.0
 [node name="Fixture4" type="CSGSphere3D" parent="Luces_Emergencia" unique_id=1340729705]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 2.7, 3.6)
 radius = 0.08
+
+[node name="ParedFrenteDer_Collider" type="StaticBody3D" parent="." unique_id=171228221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.5, -4)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFrenteDer_Collider" unique_id=2029963644]
+shape = SubResource("BoxShape3D_4kof1")

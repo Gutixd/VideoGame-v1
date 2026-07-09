@@ -629,10 +629,27 @@ Se amplió el Hall de 20 m a 34 m de ancho (centro desplazado de X=0 a X=7) para
 
 **Verificado caminando** (mismo método de la sección 19.2): jugador reposicionado a (14, 1, 20), input `move_forward` simulado, resultado: cruce exitoso de Z=20 a **Z=24.3 dentro de Andén_B**. Ambas escaleras (Andén_A y Andén_B) quedan confirmadas como físicamente caminables, no solo alineadas por coordenadas.
 
-### 19.5 Pendiente (no resuelto en esta pasada)
+### 19.5 Conexión con Sala Técnica (completado)
 
-- **Conexión con Sala Técnica**: `sala_tecnica.tscn` (zona 01 del GDD) sigue siendo una escena completamente separada, sin instanciar en `estacion_baquedano.tscn`. El muro norte del Hall (`Muro_Norte_Hall`) tampoco tiene ninguna abertura hacia esa dirección todavía.
+Siguiendo la instrucción del productor de conectar el resto de los mapas y de hacer que la partida empiece en Sala Técnica (zona 01 del GDD, tal como especifica el documento), se integró `sala_tecnica.tscn` como cuarta subescena de `estacion_baquedano.tscn`:
+
+- **Hueco de acceso en el Hall**: `BLOCK_Muro_Norte_Hall` (Blender) y su colisión (`MuroNorteHall`, Godot) se dividieron en dos piezas — `..._Oeste` (x=-9, ancho 2) y `..._Este` (x=10, ancho 28) — dejando un vano de 4 m (X=-8 a X=-4) para el acceso de mantenimiento.
+- **Instancia de Sala Técnica**: agregada bajo `/EstacionBaquedano` con `transform = Transform3D(-1,0,0, 0,1,0, 0,0,-1, -6,0,-16.5)` (rotación de 180° + traslación), de modo que su puerta (que en su escena local mira hacia -Z) queda orientada hacia el vano del Hall.
+- **Jugador único**: se eliminó el `Player` anidado dentro de `Hall` (ya obsoleto desde la sección 19.3) y se creó un `Player` nuevo, top-level bajo `/EstacionBaquedano`, con groups=["player"], en spawn `(-6, 0.9, -16.5)` — dentro de Sala Técnica, siguiendo el GDD.
+
+**Bug crítico encontrado (tercero de esta serie): el vano quedaba bloqueado por la propia Sala Técnica, no por el Hall.** Al caminar (mismo método de 19.2/19.4) el jugador avanzaba desde el spawn y se detenía en seco en Z≈-13.15 — antes incluso de llegar al vano del Hall (Z=-12.5). Investigando `sala_tecnica.tscn` se encontró que `ParedFrente_Collider` era una única pared sólida de 10 m de ancho sin ninguna abertura, mientras que el nodo `Puerta` (el hueco visual, `CSGBox3D` de 1.6 m) era **puramente decorativo** y nunca tuvo un vano correspondiente en la colisión — la sala nunca tuvo una salida caminable, ni siquiera antes de esta integración.
+
+**Fix:** `ParedFrente_Collider` se reemplazó por dos `StaticBody3D`: `ParedFrenteIzq_Collider` (centro x=-3, ancho 4) y `ParedFrenteDer_Collider` (centro x=3, ancho 4), dejando un vano de 2 m (x=-1 a x=1) alineado con la puerta visual.
+
+**Verificado caminando tras el fix**: jugador desde spawn (-6, 0.9, -16.5), `move_forward` simulado, resultado: cruce exitoso de Z=-16.5 a **Z=-5.7, ya dentro del Hall**, sin detenerse en el vano. Cadena completa Sala Técnica → Hall → Andén_A / Andén_B confirmada como físicamente caminable de extremo a extremo (no solo alineada por coordenadas).
+
+**Lección reafirmada**: un hueco visual (mesh sin colisión propia, o con colisión separada nunca ajustada) no implica un hueco físico. Cada vano de conexión entre zonas debe verificarse caminando, incluyendo los vanos internos de cada subescena, no solo los empalmes entre escenas.
+
+### 19.6 Pendiente (no resuelto en esta pasada)
+
+- Túnel km 1.4 y Sala de Emergencia siguen sin construir (roadmap, fase siguiente).
+- Auditoría pendiente: revisar si otras subescenas tienen el mismo patrón de "puerta visual sin vano de colisión" visto en Sala Técnica, antes de asumir que cualquier abertura visual es caminable.
 
 ---
 
-**FIN DEL DOCUMENTO — Fase 2, Fase 3 (primera pasada + corrección de topología y conexión) completas.**
+**FIN DEL DOCUMENTO — Fase 2, Fase 3 (primera pasada + corrección de topología + conexión completa Sala Técnica↔Hall↔Andenes) completas.**

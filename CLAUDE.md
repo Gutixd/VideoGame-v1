@@ -39,6 +39,7 @@ linea_cero/
 - ✅ Blockout, materiales PBR, bóveda real (Blender, escala completa 100m)
 - ✅ Props, iluminación, NavigationRegion3D
 - ✅ Gameplay: fallo de luces, tren fantasma, interacciones (radio/panel/nota)
+- ✅ Estación completa conectada: Sala Técnica → Hall+Combinación+L5 → Andén_A/Andén_B (escena madre `estacion_baquedano.tscn`, spawn del jugador en Sala Técnica per GDD)
 - 🟡 Audio: placeholders sintetizados, pendiente reemplazar con grabaciones reales
 - ⏳ Túnel km 1.4, Sala de Emergencia
 

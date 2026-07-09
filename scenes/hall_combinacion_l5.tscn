@@ -14,7 +14,7 @@ ambient_light_energy = 0.4
 size = Vector3(34, 0.2, 25)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_m06mu"]
-size = Vector3(34, 4.5, 0.5)
+size = Vector3(2, 4.5, 0.5)
 
 [sub_resource type="BoxShape3D" id="Box_MuroEsteOesteHall"]
 size = Vector3(0.5, 4.5, 25)
@@ -54,6 +54,9 @@ size = Vector3(4, 0.2, 2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ttwxm"]
 size = Vector3(4, 2.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l7m6w"]
+size = Vector3(28, 4.5, 0.5)
 
 [node name="HallCombinacionL5" type="Node3D" unique_id=279984855]
 
@@ -166,7 +169,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 0)
 shape = SubResource("BoxShape3D_0ins1")
 
 [node name="MuroNorteHall" type="StaticBody3D" parent="Colision" unique_id=1688586130]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.25, -12.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 2.25, -12.5)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorteHall" unique_id=1536885659]
 shape = SubResource("BoxShape3D_m06mu")
@@ -302,3 +305,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -3.75, 21)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramoB2" unique_id=1853140760]
 shape = SubResource("BoxShape3D_ttwxm")
+
+[node name="MuroNorteHallEste" type="StaticBody3D" parent="Colision" unique_id=1978250548]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.25, -12.5)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorteHallEste" unique_id=1280813785]
+shape = SubResource("BoxShape3D_l7m6w")

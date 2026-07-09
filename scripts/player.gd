@@ -43,7 +43,10 @@ func _handle_movement(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
-	velocity.y -= 9.8 * delta
+	if is_on_floor():
+		velocity.y = 0.0
+	else:
+		velocity.y -= 9.8 * delta
 
 func _handle_camera_look(_delta):
 	if Input.is_action_just_pressed("ui_cancel"):

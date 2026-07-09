@@ -21,7 +21,7 @@ size = Vector3(0.5, 3, 8)
 script = ExtResource("Script_sala")
 
 [node name="PisoCollider" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PisoCollider"]
 shape = SubResource("BoxShape3D_piso")

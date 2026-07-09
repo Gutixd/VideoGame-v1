@@ -594,4 +594,40 @@ Ver documento completo: [`referencias_fotograficas/README.md`](../referencias_fo
 
 ---
 
-**FIN DEL DOCUMENTO — Fase 2, Fase 3 (primera pasada) y corrección de investigación completas.**
+## 19. Corrección de topología (andenes laterales) y conexión Hall↔Andén verificada
+
+### 19.1 Corrección de topología
+
+Una foto real adicional del productor (tren llegando, ambos andenes visibles) reveló que la v3 anterior de este documento estaba equivocada en un punto fundamental: Baquedano **no es un andén único central (isla)** con una vía a cada lado. Es una estación de **andenes laterales**: dos plataformas separadas, cada una sirviendo un sentido opuesto, con **ambas vías juntas en el medio**. Para cambiar de sentido, los pasajeros usan una escalera distinta para cada andén — no hay cruce a nivel de piso.
+
+Corrección aplicada:
+- **Andén_A** se mantiene exactamente en su posición original (X=0) para no romper la conexión con el Hall
+- **Vías (Via1 + Via2)** ahora adyacentes en un foso combinado, al Este de Andén_A
+- **Andén_B** (nuevo, atmosférico/opcional, no es camino crítico del jugador en esta v1) al Este de las vías
+- Ancho total de la estación: 21 m (antes 14 m)
+
+### 19.2 Bug crítico encontrado: la conexión Hall↔Andén nunca fue caminable
+
+Todas las verificaciones anteriores de la unión Hall↔Andén (sección de la escena madre `estacion_baquedano.tscn`) se hicieron **matemáticamente** (comparando coordenadas de nodos), nunca **caminando**. Al adquirir la capacidad de simular input real en el juego corriendo (`game_manage.input_action`), se probó el cruce de verdad:
+
+- El jugador, moviéndose con input real (`move_forward`) desde el Hall hacia el Andén, quedó **atascado exactamente en Z=22.35** — la cara del `Muro_Norte` del Andén (en Z=23, grosor 0.5, menos el radio de la cápsula del jugador 0.4) bloqueaba el paso por completo
+- La alineación de coordenadas era correcta; **la geometría física no tenía ninguna abertura**
+
+**Corrección:** `Muro_Norte` (que cerraba los 21 m completos) se redujo a `Muro_Norte_Vias`, cubriendo solo el tramo de las vías (7 m). Ambos andenes quedan con su extremo norte físicamente abierto. Re-verificado caminando: el jugador ahora cruza de Z=20 (Hall) a Z=24.3 (dentro del Andén) sin obstrucción.
+
+**Lección de proceso, aplicable a todo el proyecto en adelante:** una conexión entre zonas debe validarse **caminándola con input simulado real**, no solo verificando que las coordenadas coincidan. La coincidencia matemática es necesaria pero no suficiente — no garantiza que exista una abertura física en la colisión.
+
+### 19.3 Segundo bug de pipeline encontrado: ediciones a instancias anidadas no persisten
+
+Al intentar editar el nodo `Player` (que vive dentro de `hall_combinacion_l5.tscn`) desde el contexto de la escena madre `estacion_baquedano.tscn` (ej. `/EstacionBaquedano/Hall/Player`), los cambios de posición y de grupo (`add_to_group`) **no se guardaban** — ni en la escena madre ni en la subescena. Esto incluyó un `add_to_group("player")` que se creía aplicado desde hace varias sesiones y en realidad nunca tomó efecto (el trigger de transición de ambiente, `environment_transition.gd`, llevaba todo este tiempo sin poder detectar al jugador).
+
+**Regla adoptada:** para editar un nodo que vive dentro de una escena instanciada, siempre abrir esa subescena directamente como "escena editada" (`scene_open` sobre `hall_combinacion_l5.tscn`, no sobre `estacion_baquedano.tscn`), hacer el cambio ahí, guardar, y solo después volver a la escena madre para probar la integración.
+
+### 19.4 Pendiente (no resuelto en esta pasada)
+
+- **Segunda escalera en el Hall hacia Andén_B**: actualmente Andén_B tiene su extremo norte abierto (por el fix de la sección 19.2), pero el Hall no tiene una segunda escalera física que llegue hasta ahí — su ancho actual (20 m, hasta X=10) no alcanza a cubrir la posición de Andén_B (X=14). Requiere ampliar el Hall hacia el Este.
+- **Conexión con Sala Técnica**: `sala_tecnica.tscn` (zona 01 del GDD) sigue siendo una escena completamente separada, sin instanciar en `estacion_baquedano.tscn`. El muro norte del Hall (`Muro_Norte_Hall`) tampoco tiene ninguna abertura hacia esa dirección todavía.
+
+---
+
+**FIN DEL DOCUMENTO — Fase 2, Fase 3 (primera pasada + corrección de topología y conexión) completas.**

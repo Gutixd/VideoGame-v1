@@ -27,8 +27,8 @@ polygons = [PackedInt32Array(0, 1, 2, 3)]
 [sub_resource type="BoxShape3D" id="Box_Piso"]
 size = Vector3(7, 0.2, 100)
 
-[sub_resource type="BoxShape3D" id="Box_MuroNorte"]
-size = Vector3(14, 4.3, 0.5)
+[sub_resource type="BoxShape3D" id="BoxShape3D_ukpgy"]
+size = Vector3(7, 4.3, 0.5)
 
 [sub_resource type="BoxShape3D" id="Box_MuroSur"]
 size = Vector3(7, 4.3, 0.5)
@@ -301,10 +301,10 @@ navigation_mesh = SubResource("NavMesh_anden")
 shape = SubResource("Box_Piso")
 
 [node name="MuroNorte" type="StaticBody3D" parent="Colision" unique_id=181992688]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, -50)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.15, -50)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorte" unique_id=1702045939]
-shape = SubResource("Box_MuroNorte")
+shape = SubResource("BoxShape3D_ukpgy")
 
 [node name="MuroSur" type="StaticBody3D" parent="Colision" unique_id=1779825358]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.15, 50)

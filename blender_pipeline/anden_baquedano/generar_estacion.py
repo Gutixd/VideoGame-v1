@@ -498,9 +498,17 @@ def generar():
                material=mat_franja_tactil)
 
     # --- Muros de cierre -----------------------------------------------------
-    crear_caja("Muro_Norte", col_arquitectura,
-               pos_doc=((X_MURO_OESTE_ANDEN_A + X_MURO_ESTE_ANDEN_B) / 2, 2.15, -MEDIO_LARGO),
-               size_doc=(ANCHO_TOTAL, ALTURA_ARRANQUE, 0.5), material=mat_hormigon_muro_cierre)
+    # CORREGIDO: el muro norte completo (21m) bloqueaba fisicamente la
+    # conexion con el Hall aunque las coordenadas coincidieran matematicamente
+    # -- se verifico caminando (simulacion de input real) que el jugador
+    # quedaba atascado contra este muro sin poder entrar. Ahora solo se
+    # sella el tramo de las vias (donde el jugador no debe pasar); ambos
+    # andenes quedan con su extremo norte abierto hacia el Hall.
+    ancho_vias_norte = X_ANDEN_B_INICIO - X_VIA1_INICIO
+    centro_vias_norte = (X_VIA1_INICIO + X_ANDEN_B_INICIO) / 2.0
+    crear_caja("Muro_Norte_Vias", col_arquitectura,
+               pos_doc=(centro_vias_norte, 2.15, -MEDIO_LARGO),
+               size_doc=(ancho_vias_norte, ALTURA_ARRANQUE, 0.5), material=mat_hormigon_muro_cierre)
 
     # Muro sur: cierra cada anden por separado, dejando abierto el tramo de
     # las vias (Via1 transitable hacia el tunel, Via2 sellada con reja)

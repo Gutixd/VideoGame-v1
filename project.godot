@@ -1,0 +1,26 @@
+; Engine configuration for LÍNEA CERO
+; Godot 4.3
+; https://docs.godotengine.org/en/stable/tutorials/projects/introduction_to_the_project_manager.html
+
+config_version=5
+
+[application]
+
+config/name="LÍNEA CERO"
+config/description="Horror Psicológico 3D - First Person. Metro de Santiago, Línea 1."
+config/version="0.1.0"
+run/main_scene="res://scenes/main.tscn"
+
+[physics]
+
+3d/default_gravity=9.8
+3d/default_gravity_vector=Vector3(0, -1, 0)
+
+[rendering]
+
+renderer/rendering_method="forward_plus"
+anti_aliasing/screen_space_roughness_limiter/enabled=true
+
+[audio]
+
+bus_layouts/default="res://assets/audio/default_bus_layout.tres"

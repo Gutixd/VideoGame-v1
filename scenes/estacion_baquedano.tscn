@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bi2rsqne40a5y"]
+
+[ext_resource type="PackedScene" uid="uid://bsye2ov4621r1" path="res://scenes/anden_baquedano.tscn" id="AndenL1"]
+[ext_resource type="PackedScene" uid="uid://bcu5pkkfg1l5y" path="res://scenes/hall_combinacion_l5.tscn" id="Hall"]
+
+[node name="EstacionBaquedano" type="Node3D" unique_id=2081953363]
+
+[node name="Hall" parent="." unique_id=1292446669 instance=ExtResource("Hall")]
+
+[node name="AndenL1" parent="." unique_id=1565793911 instance=ExtResource("AndenL1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 73)

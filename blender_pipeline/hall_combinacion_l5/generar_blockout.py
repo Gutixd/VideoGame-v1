@@ -97,17 +97,21 @@ def generar():
     col_raiz = crear_coleccion("Hall_Combinacion_L5")
     col_blockout = crear_coleccion("Blockout", padre=col_raiz)
 
-    # --- Hall (20 x 25 x 4.5, todo [ESTIMADO]) -----------------------------
+    # --- Hall (34 x 25 x 4.5, todo [ESTIMADO]) -----------------------------
+    # AMPLIADO respecto a la v1: se necesita alcanzar X=14 (segunda
+    # escalera hacia Anden_B) y X=20 (rama L5) sin que se superpongan.
+    # Centro desplazado a X=7 (antes X=0); el ala oeste (servicios,
+    # torniquetes) no cambia de posicion absoluta.
     crear_caja("BLOCK_Piso_Hall", col_blockout,
-               pos_doc=(0, 0, 0), size_doc=(20, 0.2, 25))
+               pos_doc=(7, 0, 0), size_doc=(34, 0.2, 25))
     crear_caja("BLOCK_Techo_Hall", col_blockout,
-               pos_doc=(0, 4.5, 0), size_doc=(20, 0.2, 25))
+               pos_doc=(7, 4.5, 0), size_doc=(34, 0.2, 25))
     crear_caja("BLOCK_Muro_Norte_Hall", col_blockout,
-               pos_doc=(0, 2.25, -12.5), size_doc=(20, 4.5, 0.5))
+               pos_doc=(7, 2.25, -12.5), size_doc=(34, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Sur_Hall", col_blockout,
-               pos_doc=(0, 2.25, 12.5), size_doc=(20, 4.5, 0.5))
+               pos_doc=(7, 2.25, 12.5), size_doc=(34, 4.5, 0.5))
     crear_caja("BLOCK_Muro_Este_Hall", col_blockout,
-               pos_doc=(10, 2.25, 0), size_doc=(0.5, 4.5, 25))
+               pos_doc=(24, 2.25, 0), size_doc=(0.5, 4.5, 25))
     crear_caja("BLOCK_Muro_Oeste_Hall", col_blockout,
                pos_doc=(-10, 2.25, 0), size_doc=(0.5, 4.5, 25))
 
@@ -124,7 +128,7 @@ def generar():
     crear_caja("BLOCK_Local_Comercial", col_blockout,
                pos_doc=(7, 1.1, 3), size_doc=(2.5, 2.2, 2))
 
-    # --- Escaleras hacia Anden L1 (2 tramos, caida total -5.0m [ESTIMADO]) -
+    # --- Escaleras hacia Anden_A / L1 (2 tramos, caida -5.0m [ESTIMADO]) ---
     # NOTA: escaleras mecanicas reales confirmadas en fuentes, pero su
     # geometria/dimension exacta NO -- pendiente de foto en persona.
     crear_caja("BLOCK_Escalera_Tramo1", col_blockout,
@@ -133,28 +137,44 @@ def generar():
                pos_doc=(0, -2.5, 19), size_doc=(4, 0.2, 2))
     crear_caja("BLOCK_Escalera_Tramo2", col_blockout,
                pos_doc=(0, -3.75, 21), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_Conexion_AndenL1", col_blockout,
+    crear_caja("BLOCK_Conexion_AndenA", col_blockout,
                pos_doc=(0, -5.0, 23), size_doc=(4, 0.2, 1))
 
+    # --- Segunda escalera, hacia Anden_B (sentido opuesto) -----------------
+    # Agregada tras la correccion de topologia del Anden L1 (v3): cada
+    # anden lateral requiere su propia escalera de bajada, sin cruce a
+    # nivel de piso. Misma caida (-5.0m), desplazada a X=14 para alinear
+    # con el centro real de Anden_B.
+    crear_caja("BLOCK_Escalera_TramoB1", col_blockout,
+               pos_doc=(14, -1.25, 16), size_doc=(4, 2.5, 4))
+    crear_caja("BLOCK_DescansoB", col_blockout,
+               pos_doc=(14, -2.5, 19), size_doc=(4, 0.2, 2))
+    crear_caja("BLOCK_Escalera_TramoB2", col_blockout,
+               pos_doc=(14, -3.75, 21), size_doc=(4, 2.5, 4))
+    crear_caja("BLOCK_Conexion_AndenB", col_blockout,
+               pos_doc=(14, -5.0, 23), size_doc=(4, 0.2, 1))
+
     # --- Bifurcacion y descenso hacia Anden L5 ([ESTIMADO]) ----------------
+    # Reubicada de X=12 a X=20 para no superponerse con la segunda
+    # escalera (Anden_B) agregada en X=14.
     crear_caja("BLOCK_Pasillo_L5", col_blockout,
-               pos_doc=(12, 0, 4), size_doc=(4, 4, 8))
+               pos_doc=(20, 0, 4), size_doc=(4, 4, 8))
     crear_caja("BLOCK_Escalera_L5", col_blockout,
-               pos_doc=(12, -5, 10), size_doc=(4, 10, 6))
+               pos_doc=(20, -5, 10), size_doc=(4, 10, 6))
 
     # --- Anden L5 (60m, perfil moderno -- ver seccion 0 del doc) -----------
     crear_caja("BLOCK_Piso_AndenL5", col_blockout,
-               pos_doc=(12, -10, 20), size_doc=(7, 0.2, 60))
+               pos_doc=(20, -10, 20), size_doc=(7, 0.2, 60))
     crear_caja("BLOCK_Techo_AndenL5", col_blockout,
-               pos_doc=(12, -6, 20), size_doc=(14, 0.2, 60))
+               pos_doc=(20, -6, 20), size_doc=(14, 0.2, 60))
     crear_caja("BLOCK_Muro_Lateral_AndenL5_Oeste", col_blockout,
-               pos_doc=(8.25, -8, 20), size_doc=(0.5, 4, 60))
+               pos_doc=(16.25, -8, 20), size_doc=(0.5, 4, 60))
     crear_caja("BLOCK_Muro_Lateral_AndenL5_Este", col_blockout,
-               pos_doc=(15.75, -8, 20), size_doc=(0.5, 4, 60))
+               pos_doc=(23.75, -8, 20), size_doc=(0.5, 4, 60))
 
     # --- Reja de plataforma reservada Linea 7 (dato real confirmado) ------
     crear_caja("BLOCK_Reja_PlataformaL7", col_blockout,
-               pos_doc=(12, -8, 48), size_doc=(3.5, 3, 0.1))
+               pos_doc=(20, -8, 48), size_doc=(3.5, 3, 0.1))
 
     print(f"[LINEA CERO] Blockout Hall+L5 generado: {len(col_blockout.objects)} objetos")
 

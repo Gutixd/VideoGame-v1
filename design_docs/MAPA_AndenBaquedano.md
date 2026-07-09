@@ -623,9 +623,14 @@ Al intentar editar el nodo `Player` (que vive dentro de `hall_combinacion_l5.tsc
 
 **Regla adoptada:** para editar un nodo que vive dentro de una escena instanciada, siempre abrir esa subescena directamente como "escena editada" (`scene_open` sobre `hall_combinacion_l5.tscn`, no sobre `estacion_baquedano.tscn`), hacer el cambio ahí, guardar, y solo después volver a la escena madre para probar la integración.
 
-### 19.4 Pendiente (no resuelto en esta pasada)
+### 19.4 Segunda escalera Hall→Andén_B (completado)
 
-- **Segunda escalera en el Hall hacia Andén_B**: actualmente Andén_B tiene su extremo norte abierto (por el fix de la sección 19.2), pero el Hall no tiene una segunda escalera física que llegue hasta ahí — su ancho actual (20 m, hasta X=10) no alcanza a cubrir la posición de Andén_B (X=14). Requiere ampliar el Hall hacia el Este.
+Se amplió el Hall de 20 m a 34 m de ancho (centro desplazado de X=0 a X=7) para dar espacio a una segunda escalera espejo (mismo perfil de caída, -5.0 m en 2 tramos) centrada en X=14, alineada con el centro real de Andén_B. La rama de Línea 5 (pasillo, escalera, andén, reja de plataforma L7) se reubicó de X=12 a X=20 para no superponerse con la nueva escalera.
+
+**Verificado caminando** (mismo método de la sección 19.2): jugador reposicionado a (14, 1, 20), input `move_forward` simulado, resultado: cruce exitoso de Z=20 a **Z=24.3 dentro de Andén_B**. Ambas escaleras (Andén_A y Andén_B) quedan confirmadas como físicamente caminables, no solo alineadas por coordenadas.
+
+### 19.5 Pendiente (no resuelto en esta pasada)
+
 - **Conexión con Sala Técnica**: `sala_tecnica.tscn` (zona 01 del GDD) sigue siendo una escena completamente separada, sin instanciar en `estacion_baquedano.tscn`. El muro norte del Hall (`Muro_Norte_Hall`) tampoco tiene ninguna abertura hacia esa dirección todavía.
 
 ---

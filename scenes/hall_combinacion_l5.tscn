@@ -10,11 +10,11 @@ ambient_light_source = 2
 ambient_light_color = Color(0.25, 0.25, 0.27, 1)
 ambient_light_energy = 0.4
 
-[sub_resource type="BoxShape3D" id="Box_PisoHall"]
-size = Vector3(20, 0.2, 25)
+[sub_resource type="BoxShape3D" id="BoxShape3D_0ins1"]
+size = Vector3(34, 0.2, 25)
 
-[sub_resource type="BoxShape3D" id="Box_MuroNorteSurHall"]
-size = Vector3(20, 4.5, 0.5)
+[sub_resource type="BoxShape3D" id="BoxShape3D_m06mu"]
+size = Vector3(34, 4.5, 0.5)
 
 [sub_resource type="BoxShape3D" id="Box_MuroEsteOesteHall"]
 size = Vector3(0.5, 4.5, 25)
@@ -45,6 +45,15 @@ size = Vector3(0.5, 4, 60)
 
 [sub_resource type="BoxShape3D" id="Box_RejaL7"]
 size = Vector3(3.5, 3, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vsuft"]
+size = Vector3(4, 2.5, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_akqx3"]
+size = Vector3(4, 0.2, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ttwxm"]
+size = Vector3(4, 2.5, 4)
 
 [node name="HallCombinacionL5" type="Node3D" unique_id=279984855]
 
@@ -133,24 +142,37 @@ light_color = Color(1, 0.15, 0.1, 1)
 light_energy = 1.5
 omni_range = 4.0
 
+[node name="Luz_EscaleraB_01" type="OmniLight3D" parent="Iluminacion" unique_id=1895647711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.5, 16)
+light_color = Color(0.8980392, 0.8980392, 0.9490196, 1)
+light_energy = 2.5
+omni_range = 6.0
+
+[node name="Luz_EscaleraB_02" type="OmniLight3D" parent="Iluminacion" unique_id=1949621726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -1.5, 21)
+light_color = Color(0.8980392, 0.8980392, 0.9490196, 1)
+light_energy = 2.5
+omni_range = 6.0
+
 [node name="Player" parent="." unique_id=1972862620 groups=["player"] instance=ExtResource("PackedScene_player")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 1, -11.5)
 
 [node name="Colision" type="Node3D" parent="." unique_id=1373557971]
 
 [node name="PisoHall" type="StaticBody3D" parent="Colision" unique_id=1979183150]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PisoHall" unique_id=1053653443]
-shape = SubResource("Box_PisoHall")
+shape = SubResource("BoxShape3D_0ins1")
 
 [node name="MuroNorteHall" type="StaticBody3D" parent="Colision" unique_id=1688586130]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.25, -12.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.25, -12.5)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroNorteHall" unique_id=1536885659]
-shape = SubResource("Box_MuroNorteSurHall")
+shape = SubResource("BoxShape3D_m06mu")
 
 [node name="MuroEsteHall" type="StaticBody3D" parent="Colision" unique_id=1049821636]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 2.25, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 2.25, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroEsteHall" unique_id=2077727895]
 shape = SubResource("Box_MuroEsteOesteHall")
@@ -228,37 +250,55 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 21)
 shape = SubResource("Box_EscaleraTramo")
 
 [node name="PasilloL5" type="StaticBody3D" parent="Colision" unique_id=2061417148]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PasilloL5" unique_id=1526897125]
 shape = SubResource("Box_PasilloL5")
 
 [node name="EscaleraL5" type="StaticBody3D" parent="Colision" unique_id=1946063599]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -5, 10)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -5, 10)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraL5" unique_id=516961249]
 shape = SubResource("Box_EscaleraL5")
 
 [node name="PisoAndenL5" type="StaticBody3D" parent="Colision" unique_id=1034050806]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -10, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -10, 20)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/PisoAndenL5" unique_id=934959947]
 shape = SubResource("Box_PisoAndenL5")
 
 [node name="MuroLateralAndenL5Oeste" type="StaticBody3D" parent="Colision" unique_id=2012234449]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.25, -8, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.25, -8, 20)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Oeste" unique_id=136654220]
 shape = SubResource("Box_MuroLateralAndenL5")
 
 [node name="MuroLateralAndenL5Este" type="StaticBody3D" parent="Colision" unique_id=1039885889]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.75, -8, 20)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.75, -8, 20)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/MuroLateralAndenL5Este" unique_id=2132491214]
 shape = SubResource("Box_MuroLateralAndenL5")
 
 [node name="RejaPlataformaL7" type="StaticBody3D" parent="Colision" unique_id=1589331835]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, -8, 48)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, -8, 48)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/RejaPlataformaL7" unique_id=1938371459]
 shape = SubResource("Box_RejaL7")
+
+[node name="EscaleraTramoB1" type="StaticBody3D" parent="Colision" unique_id=1097706231]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -1.25, 16)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramoB1" unique_id=1769776912]
+shape = SubResource("BoxShape3D_vsuft")
+
+[node name="DescansoB" type="StaticBody3D" parent="Colision" unique_id=119870555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -2.5, 19)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/DescansoB" unique_id=275581231]
+shape = SubResource("BoxShape3D_akqx3")
+
+[node name="EscaleraTramoB2" type="StaticBody3D" parent="Colision" unique_id=1609041989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, -3.75, 21)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Colision/EscaleraTramoB2" unique_id=1853140760]
+shape = SubResource("BoxShape3D_ttwxm")

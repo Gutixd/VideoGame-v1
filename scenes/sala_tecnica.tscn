@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_piso"]
-size = Vector3(10, 0.2, 8)
+size = Vector3(12, 1.0, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pared_frente"]
 size = Vector3(10, 4, 0.5)
@@ -18,7 +18,7 @@ size = Vector3(0.5, 4, 8)
 [node name="SalaTecnica" type="Node3D"]
 
 [node name="PisoCollider" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="PisoCollider"]
 shape = SubResource("BoxShape3D_piso")

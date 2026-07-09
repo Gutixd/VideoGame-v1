@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://c8p3q7h5j2k9n4m1b5v6x7y8"]
+[gd_scene format=3 uid="uid://b1alnlhuy6ser"]
 
-[ext_resource type="Script" path="res://scripts/sala_tecnica.gd" id="Script_sala"]
+[ext_resource type="Script" uid="uid://bjl00n1r475ha" path="res://scripts/sala_tecnica.gd" id="Script_sala"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_piso"]
-size = Vector3(12, 1.0, 10)
+size = Vector3(12, 1, 10)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_pared_frente"]
 size = Vector3(10, 3, 0.5)
@@ -17,155 +17,152 @@ size = Vector3(0.5, 3, 8)
 [sub_resource type="BoxShape3D" id="BoxShape3D_pared_der"]
 size = Vector3(0.5, 3, 8)
 
-[node name="SalaTecnica" type="Node3D"]
+[node name="SalaTecnica" type="Node3D" unique_id=1378372600]
 script = ExtResource("Script_sala")
 
-[node name="PisoCollider" type="StaticBody3D" parent="."]
+[node name="PisoCollider" type="StaticBody3D" parent="." unique_id=493919301]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PisoCollider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PisoCollider" unique_id=1818869744]
 shape = SubResource("BoxShape3D_piso")
 
-[node name="Piso" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+[node name="Piso" type="CSGBox3D" parent="." unique_id=101347756]
 size = Vector3(10, 0.2, 8)
 
-[node name="Techo" type="CSGBox3D" parent="."]
+[node name="Techo" type="CSGBox3D" parent="." unique_id=126103058]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
 size = Vector3(10, 0.2, 8)
 
-[node name="ParedFrente" type="CSGBox3D" parent="."]
+[node name="ParedFrente" type="CSGBox3D" parent="." unique_id=622493864]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
 size = Vector3(10, 3, 0.5)
 
-[node name="ParedFondo" type="CSGBox3D" parent="."]
+[node name="ParedFondo" type="CSGBox3D" parent="." unique_id=384112648]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
 size = Vector3(10, 3, 0.5)
 
-[node name="ParedIzquierda" type="CSGBox3D" parent="."]
+[node name="ParedIzquierda" type="CSGBox3D" parent="." unique_id=339070128]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 0)
 size = Vector3(0.5, 3, 8)
 
-[node name="ParedDerecha" type="CSGBox3D" parent="."]
+[node name="ParedDerecha" type="CSGBox3D" parent="." unique_id=1319491043]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 0)
 size = Vector3(0.5, 3, 8)
 
-[node name="ParedFrente_Collider" type="StaticBody3D" parent="."]
+[node name="ParedFrente_Collider" type="StaticBody3D" parent="." unique_id=1380592176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -4)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFrente_Collider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFrente_Collider" unique_id=695004105]
 shape = SubResource("BoxShape3D_pared_frente")
 
-[node name="ParedFondo_Collider" type="StaticBody3D" parent="."]
+[node name="ParedFondo_Collider" type="StaticBody3D" parent="." unique_id=1490072396]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 4)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFondo_Collider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedFondo_Collider" unique_id=111342084]
 shape = SubResource("BoxShape3D_pared_fondo")
 
-[node name="ParedIzq_Collider" type="StaticBody3D" parent="."]
+[node name="ParedIzq_Collider" type="StaticBody3D" parent="." unique_id=1072156244]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.5, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedIzq_Collider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedIzq_Collider" unique_id=2036429205]
 shape = SubResource("BoxShape3D_pared_izq")
 
-[node name="ParedDer_Collider" type="StaticBody3D" parent="."]
+[node name="ParedDer_Collider" type="StaticBody3D" parent="." unique_id=1714148719]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.5, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedDer_Collider"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ParedDer_Collider" unique_id=771920698]
 shape = SubResource("BoxShape3D_pared_der")
 
-[node name="Puerta" type="CSGBox3D" parent="."]
+[node name="Puerta" type="CSGBox3D" parent="." unique_id=1627049432]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, -3.7)
 size = Vector3(1.6, 2.3, 0.12)
 
-[node name="Tuberias" type="Node3D" parent="."]
+[node name="Tuberias" type="Node3D" parent="." unique_id=2031698595]
 
-[node name="Tuberia1" type="CSGCylinder3D" parent="Tuberias"]
-transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.6, -1.0)
+[node name="Tuberia1" type="CSGCylinder3D" parent="Tuberias" unique_id=1741162060]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.6, -1)
 radius = 0.15
 height = 9.0
 
-[node name="Tuberia2" type="CSGCylinder3D" parent="Tuberias"]
-transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.3, -1.0)
+[node name="Tuberia2" type="CSGCylinder3D" parent="Tuberias" unique_id=130958807]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.3, -1)
 radius = 0.12
 height = 9.0
 
-[node name="Tuberia3" type="CSGCylinder3D" parent="Tuberias"]
-transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2.0, -1.0)
+[node name="Tuberia3" type="CSGCylinder3D" parent="Tuberias" unique_id=2062747098]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 2, -1)
 radius = 0.1
 height = 9.0
 
-[node name="Carteles" type="Node3D" parent="."]
+[node name="Carteles" type="Node3D" parent="." unique_id=478375225]
 
-[node name="Cartel_Salida" type="Node3D" parent="Carteles"]
+[node name="Cartel_Salida" type="Node3D" parent="Carteles" unique_id=1953440302]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2.4, -3.7)
 
-[node name="Panel" type="CSGBox3D" parent="Carteles/Cartel_Salida"]
+[node name="Panel" type="CSGBox3D" parent="Carteles/Cartel_Salida" unique_id=114797432]
 size = Vector3(1.6, 0.5, 0.05)
 
-[node name="Texto" type="Label3D" parent="Carteles/Cartel_Salida"]
+[node name="Texto" type="Label3D" parent="Carteles/Cartel_Salida" unique_id=864036222]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 billboard = 1
 text = "◄ SALIDA"
 font_size = 48
-outline_size = 12
 
-[node name="Cartel_Peligro" type="Node3D" parent="Carteles"]
+[node name="Cartel_Peligro" type="Node3D" parent="Carteles" unique_id=980859351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2.4, -3.7)
 
-[node name="Panel" type="CSGBox3D" parent="Carteles/Cartel_Peligro"]
+[node name="Panel" type="CSGBox3D" parent="Carteles/Cartel_Peligro" unique_id=767950405]
 size = Vector3(1.8, 0.6, 0.05)
 
-[node name="Texto" type="Label3D" parent="Carteles/Cartel_Peligro"]
+[node name="Texto" type="Label3D" parent="Carteles/Cartel_Peligro" unique_id=1562573901]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.06)
 billboard = 1
 text = "⚠ PELIGRO
 ALTO VOLTAJE"
-font_size = 32
 outline_size = 10
 
-[node name="Luces_Emergencia" type="Node3D" parent="."]
+[node name="Luces_Emergencia" type="Node3D" parent="." unique_id=156077047]
 
-[node name="Luz_Emergencia1" type="OmniLight3D" parent="Luces_Emergencia"]
+[node name="Luz_Emergencia1" type="OmniLight3D" parent="Luces_Emergencia" unique_id=2094222903]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 2.7, -3.6)
-light_energy_multiplier = 0.8
+light_color = Color(1, 0.3, 0.2, 1)
+light_energy = 1.5
 omni_range = 3.0
 omni_attenuation = 2.0
-light_color = Color(1.0, 0.3, 0.2, 1.0)
 
-[node name="Fixture1" type="CSGSphere3D" parent="Luces_Emergencia"]
+[node name="Fixture1" type="CSGSphere3D" parent="Luces_Emergencia" unique_id=1421757745]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 2.7, -3.6)
 radius = 0.08
 
-[node name="Luz_Emergencia2" type="OmniLight3D" parent="Luces_Emergencia"]
+[node name="Luz_Emergencia2" type="OmniLight3D" parent="Luces_Emergencia" unique_id=92102255]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 2.7, -3.6)
-light_energy_multiplier = 0.8
+light_color = Color(1, 0.3, 0.2, 1)
+light_energy = 1.5
 omni_range = 3.0
 omni_attenuation = 2.0
-light_color = Color(1.0, 0.3, 0.2, 1.0)
 
-[node name="Fixture2" type="CSGSphere3D" parent="Luces_Emergencia"]
+[node name="Fixture2" type="CSGSphere3D" parent="Luces_Emergencia" unique_id=599277262]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 2.7, -3.6)
 radius = 0.08
 
-[node name="Luz_Emergencia3" type="OmniLight3D" parent="Luces_Emergencia"]
+[node name="Luz_Emergencia3" type="OmniLight3D" parent="Luces_Emergencia" unique_id=420570150]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 2.7, 3.6)
-light_energy_multiplier = 0.8
+light_color = Color(1, 0.3, 0.2, 1)
+light_energy = 1.5
 omni_range = 3.0
 omni_attenuation = 2.0
-light_color = Color(1.0, 0.3, 0.2, 1.0)
 
-[node name="Fixture3" type="CSGSphere3D" parent="Luces_Emergencia"]
+[node name="Fixture3" type="CSGSphere3D" parent="Luces_Emergencia" unique_id=1355786797]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 2.7, 3.6)
 radius = 0.08
 
-[node name="Luz_Emergencia4" type="OmniLight3D" parent="Luces_Emergencia"]
+[node name="Luz_Emergencia4" type="OmniLight3D" parent="Luces_Emergencia" unique_id=56141564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 2.7, 3.6)
-light_energy_multiplier = 0.8
+light_color = Color(1, 0.3, 0.2, 1)
+light_energy = 1.5
 omni_range = 3.0
 omni_attenuation = 2.0
-light_color = Color(1.0, 0.3, 0.2, 1.0)
 
-[node name="Fixture4" type="CSGSphere3D" parent="Luces_Emergencia"]
+[node name="Fixture4" type="CSGSphere3D" parent="Luces_Emergencia" unique_id=1340729705]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 2.7, 3.6)
 radius = 0.08

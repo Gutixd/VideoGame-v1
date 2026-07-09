@@ -33,13 +33,21 @@ linea_cero/
 
 ## Roadmap
 
-**Sem 1 (ACTUAL):** Setup + Player Controller
-- ✅ Estructura de carpetas
-- ⏳ `player.gd` con CharacterBody3D, Camera3D, linterna
-- ⏳ Escena `main.tscn`
-- ⏳ Blockout mínimo para testear movimiento
+**Sem 1:** ✅ Setup + Player Controller (Sala Técnica, movimiento, linterna)
 
-**Sem 2–6:** Ver README.md
+**Sem 2 (ACTUAL):** Andén Baquedano
+- ✅ Blockout, materiales PBR, bóveda real (Blender, escala completa 100m)
+- ✅ Props, iluminación, NavigationRegion3D
+- ✅ Gameplay: fallo de luces, tren fantasma, interacciones (radio/panel/nota)
+- 🟡 Audio: placeholders sintetizados, pendiente reemplazar con grabaciones reales
+- ⏳ Túnel km 1.4, Sala de Emergencia
+
+**Sem 3–6:** Ver README.md y `design_docs/MAPA_AndenBaquedano.md` sección 17
+
+## Herramientas MCP disponibles
+
+- **godot-ai**: MCP con acceso directo al editor de Godot (ejecutar proyecto, capturar pantalla, leer/escribir propiedades de nodos, adjuntar scripts, leer logs). Preferir esto sobre pedirle al usuario que haga F5/F6 manualmente y describa lo que ve — se puede verificar visualmente y corregir en el mismo turno.
+- **IMPORTANTE:** antes de escribir cualquier propiedad de nodo, verificar el nombre exacto con `node_get_properties` — Godot 4 a veces difiere de la intuición (ej. `light_energy`, NO `light_energy_multiplier`, que no existe y falla silenciosamente dejando el valor por defecto)
 
 ## Directrices de desarrollo
 

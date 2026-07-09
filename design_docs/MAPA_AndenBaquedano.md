@@ -3,8 +3,8 @@
 **Proyecto:** LÍNEA CERO
 **Zona:** 02 — Andén Baquedano
 **Autor:** Senior Level Designer / Environment Artist (documento de diseño)
-**Estado:** 🟡 Pendiente de aprobación — NO IMPLEMENTAR hasta visto bueno
-**Versión:** 1.0
+**Estado:** 🟢 Implementado (Blockout, Iluminación, Materiales, Props, Navegación, Gameplay, Audio placeholder) — ver sección 17
+**Versión:** 2.0 — escala real completa (ver errata de escala en sección 17)
 
 ---
 
@@ -32,13 +32,13 @@ Basado en el estilo arquitectónico documentado de las estaciones originales de 
 
 | Elemento | Medida real estimada | Medida usada en el nivel | Justificación |
 |---|---|---|---|
-| Largo total del andén | ~95–110 m [ESTIMADO] | **55 m** | Ver "Adaptaciones de Gameplay" — comprimido para ritmo de horror, resto implícito con oscuridad/niebla en extremos bloqueados |
+| Largo total del andén | ~95–110 m [ESTIMADO] | **100 m** (ESCALA REAL COMPLETA, sin comprimir — ver sección 17) | Dentro del rango real estimado. La compresión a 55 m de la v1.0 fue revertida por decisión explícita del productor |
 | Ancho útil de andén (isla) | ~6–8 m [ESTIMADO] | 7 m | Dentro de rango real, permite recorrido cómodo en primera persona sin sentirse angosto |
 | Ancho de cada vía (foso) | ~3.5 m [ESTIMADO] | 3.5 m | Sin cambios, es dimensión funcional de riel estándar |
 | Ancho total estación (vía+andén+vía) | ~12–14 m [ESTIMADO] | 14 m | Ancho total = 3.5 + 7 + 3.5 |
 | Alto libre en muros laterales | ~4.2–4.5 m [ESTIMADO] | 4.3 m | — |
-| Alto en clave de bóveda (centro) | ~5.5 m [ESTIMADO] | 5.5 m | Curvatura de bóveda de cañón |
-| Separación entre columnas | ~6 m [ESTIMADO, basado en proporción foto] | 6 m | 9 columnas a lo largo de 55 m |
+| Alto en clave de bóveda (centro) | ~5.5 m [ESTIMADO] | 5.5 m | Curvatura de bóveda de cañón, generada por arco circular real (radio ≈21 m) |
+| Separación entre columnas | ~6 m [ESTIMADO, basado en proporción foto] | 6 m | **17 columnas** a lo largo de 100 m (antes 9 en la versión comprimida) |
 | Altura de borde de andén sobre riel | ~1.1 m | 1.1 m | Estándar de seguridad ferroviaria |
 | Escala real | 1 unidad Godot = 1 metro | — | Estándar del proyecto |
 
@@ -517,6 +517,43 @@ Al construir la colisión física en Godot se detectaron inconsistencias geomét
 
 ---
 
-**FIN DEL DOCUMENTO — Fase 2 completa.**
+## 17. Cambio de escala y estado final de implementación (Fase 3 completa)
 
-Según el proceso solicitado, ahora corresponde **esperar aprobación** antes de iniciar la Fase 3 (Implementación en Godot: blockout → iluminación → materiales → props → audio → navegación → gameplay, en ese orden estricto, sin mezclar fases).
+### 17.1 Cambio de escala (override del productor)
+
+La v1.0 de este documento (sección 15) comprimía el largo real estimado (~95–110 m) a 55 m jugables, justificado por ritmo de gameplay. **Esa decisión fue revertida explícitamente por el productor**, quien solicitó escala real completa, sin reducir, cubriendo toda la estructura visible. En consecuencia:
+
+- Largo de estación: 55 m → **100 m** (dentro del rango estimado real, ver sección 2)
+- Columnas: 9 → **17** (mismo espaciado real de 6 m, ahora a lo largo de todo el largo)
+- Ancho (14 m) y alturas (4.3 m arranque / 5.5 m clave) **no cambiaron** — ya eran reales desde el blockout original, nunca estuvieron reducidas
+- Todas las posiciones de props, señalética, luces y colisión se recalcularon paramétricamente a partir de constantes (`LARGO_ESTACION`, `SEPARACION_COLUMNAS`, etc.) en `generar_estacion.py`, no a mano — así un futuro ajuste de escala no requiere reescribir cada coordenada
+
+### 17.2 Estado de cada fase
+
+| Fase | Estado | Detalle |
+|---|---|---|
+| Blockout | ✅ Completo | `generar_blockout.py` (histórico) → superado por `generar_estacion.py` |
+| Iluminación | ✅ Completo | 17 luces de cornisa + 4 emergencia + 1 spot de túnel + ambiente. Bug crítico corregido: `light_energy_multiplier` no existe en Godot 4 (es `light_energy`) — todas las luces del proyecto estaban ancladas a energía 1.0 por defecto sin importar el valor escrito |
+| Materiales | ✅ Completo | Todos los materiales PBR autorados en Blender (nodos: Image Texture + Normal Map + Mapping/UV), embebidos en el `.glb` exportado — ningún material se crea vía script de Godot en esta zona (a diferencia de Sala Técnica, que aún usa el método antiguo) |
+| Props | ✅ Completo | 4 bancas, 3 basureros, 2 extintores, caja de herramientas de Rodrigo, reloj de andén detenido, 3 carteles colgantes "BAQUEDANO" con texto real (Text→Mesh), nota de técnico |
+| Navegación | ✅ Completo | `NavigationRegion3D` con malla rectangular sobre el andén (excluye ambos fosos de vía), lista para la futura IA de la entidad (`entity_ai.gd`, Sem 4 del roadmap general) |
+| Gameplay | ✅ Completo (primera pasada) | `anden_baquedano.gd`: secuencia de fallo progresivo de luces (siempre detrás del jugador, nunca delante — regla del GDD), disparo único de "tren fantasma", disparo único de "contacto auditivo con la entidad". Interactuables: radio (caseta), panel de llegadas, nota de técnico |
+| Audio | 🟡 Placeholder funcional | 6 sonidos **sintetizados por código** (senoidales + ruido: zumbido eléctrico, chisporroteo, tren fantasma, estática de radio, contacto de entidad, pasos) vía `generar_audio_placeholder.py`. **No son grabaciones reales** — Freesound.org/ZapSplat requieren cuenta y descarga manual con atribución, no se pueden obtener por API pública sin autenticación. Reemplazar antes de V1 final |
+
+### 17.3 Verificación
+
+Probado de punta a punta con el MCP `godot-ai` (ejecución real del proyecto + captura de pantalla + lectura de logs, no solo revisión de código):
+- Escena corre sin errores de script (`logs_read` limpio tras 46s de ejecución continua)
+- Render confirma: bóveda curva real, 17 columnas en perspectiva hasta el fondo, piso de terrazo, muros cerámicos, props visibles (banca, panel de llegadas)
+- Colisión validada: piso, muros, columnas, caseta, barreras, reja de vía este, punto de descenso
+
+### 17.4 Pendiente para una pasada posterior
+
+- Reemplazar los 6 audios sintetizados por grabaciones reales (Freesound.org / ZapSplat, con atribución CC)
+- Aplicar el mismo fix de `light_energy` a Sala Técnica (ya corregido) y validar Sala Técnica con el mismo método de captura real
+- Verificar in-game (caminando, no solo por código) que las interacciones (radio, panel, nota) respondan al `interact()` del jugador
+- Curva de balance de la secuencia de fallo de luces con playtesting real (actualmente puramente basada en posición Z, sin variación aleatoria)
+
+---
+
+**FIN DEL DOCUMENTO — Fase 2 y Fase 3 (primera pasada) completas.**

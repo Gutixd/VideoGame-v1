@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ckfubsnncpeyq"]
+
+[ext_resource type="Texture2D" uid="uid://daopxnn7yjeml" path="res://assets/textures/hormigon/Concrete034_1K-JPG_Color.jpg" id="1_4wl20"]
+[ext_resource type="Texture2D" uid="uid://bmm8rcfoml2pk" path="res://assets/textures/hormigon/Concrete034_1K-JPG_NormalGL.jpg" id="2_y4e1a"]
+[ext_resource type="Texture2D" uid="uid://c5c1x34kgq11" path="res://assets/textures/hormigon/Concrete034_1K-JPG_Roughness.jpg" id="3_1sq3j"]
+
+[resource]
+albedo_texture = ExtResource("1_4wl20")
+roughness_texture = ExtResource("3_1sq3j")
+normal_enabled = true
+normal_texture = ExtResource("2_y4e1a")
+uv1_scale = Vector3(0.25, 0.25, 0.25)
+uv1_triplanar = true
+uv1_world_triplanar = true

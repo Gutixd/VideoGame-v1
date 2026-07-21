@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cf4plru5psk1n"]
 
-[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://scenes/player.tscn" id="PackedScene_player"]
+[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://blender_pipeline/METRO_BAQUEDANO_H/player.tscn" id="PackedScene_player"]
 [ext_resource type="PackedScene" uid="uid://b1alnlhuy6ser" path="res://scenes/sala_tecnica.tscn" id="PackedScene_sala"]
 
 [sub_resource type="Environment" id="Environment_main"]

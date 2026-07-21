@@ -11,7 +11,7 @@
 [ext_resource type="AudioStream" uid="uid://b335xfk8elnl7" path="res://assets/audio/anden_baquedano/radio_estatica.wav" id="11_adss7"]
 [ext_resource type="AudioStream" uid="uid://cjt6if01drhxp" path="res://assets/audio/anden_baquedano/contacto_entidad.wav" id="12_xug4o"]
 [ext_resource type="PackedScene" uid="uid://k30f44guq1nr" path="res://assets/models/anden_baquedano/anden_baquedano_estacion.glb" id="GLB_estacion"]
-[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://scenes/player.tscn" id="PackedScene_player"]
+[ext_resource type="PackedScene" uid="uid://1i0hphsibs08" path="res://blender_pipeline/METRO_BAQUEDANO_H/player.tscn" id="PackedScene_player"]
 
 [sub_resource type="Environment" id="Environment_anden"]
 background_mode = 1
@@ -124,6 +124,7 @@ size = Vector3(0.3, 1, 0.6)
 script = ExtResource("1_paxpe")
 
 [node name="Geometria" parent="." unique_id=1867547136 instance=ExtResource("GLB_estacion")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.014427185, -0.014427662, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1766271546]
 environment = SubResource("Environment_anden")
@@ -289,6 +290,8 @@ omni_range = 10.0
 
 [node name="Player" parent="." unique_id=925587991 instance=ExtResource("PackedScene_player")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 1.5, 1, -49)
+floor_max_angle = 0.7853982
+floor_snap_length = 0.1
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=102036497]
 navigation_mesh = SubResource("NavMesh_anden")

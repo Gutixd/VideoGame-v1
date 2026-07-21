@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://b6ry74eb0bqx1"]
+
+[ext_resource type="Texture2D" uid="uid://bw2vektex7370" path="res://assets/textures/terrazo_piso/Terrazzo013_1K-JPG_Color.jpg" id="1_f4u6o"]
+[ext_resource type="Texture2D" uid="uid://bnhmaajj7srf4" path="res://assets/textures/terrazo_piso/Terrazzo013_1K-JPG_NormalGL.jpg" id="2_e0k03"]
+[ext_resource type="Texture2D" uid="uid://d3k0jv7o7rxb5" path="res://assets/textures/terrazo_piso/Terrazzo013_1K-JPG_Roughness.jpg" id="3_ixfql"]
+
+[resource]
+albedo_texture = ExtResource("1_f4u6o")
+roughness_texture = ExtResource("3_ixfql")
+normal_enabled = true
+normal_texture = ExtResource("2_e0k03")
+uv1_scale = Vector3(0.35, 0.35, 0.35)
+uv1_triplanar = true
+uv1_world_triplanar = true

@@ -34,6 +34,7 @@ seccion 2 y 15 de MAPA_HallCombinacionL5.md.
 
 import bpy
 import os
+import math
 
 # ---------------------------------------------------------------------------
 # Setup (identico a anden_baquedano/generar_blockout.py)
@@ -78,6 +79,58 @@ def crear_caja(nombre, coleccion, pos_doc, size_doc):
     obj.select_set(True)
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+
+    for col in obj.users_collection:
+        col.objects.unlink(obj)
+    coleccion.objects.link(obj)
+    return obj
+
+
+def crear_rampa(nombre, coleccion, top_doc, bottom_doc, ancho, espesor=0.4):
+    """Rampa inclinada continua (superficie caminable) entre dos puntos.
+
+    top_doc / bottom_doc: puntos (x, y, z) en coordenadas de documento que
+    definen la LINEA DE SUPERFICIE de la rampa (donde camina el jugador).
+    La caja se inclina rotando alrededor del eje X (Este-Oeste) y se baja
+    medio espesor a lo largo de su normal para que la cara superior quede
+    exactamente sobre la linea top->bottom (sin escalon/labio en las uniones).
+
+    A diferencia de los "escalones" de cajas planas de la v1 (que dejaban
+    caidas verticales de 2.4m y huecos por donde el jugador caia al vacio),
+    una rampa es una superficie continua: fisica suave para bajar Y subir,
+    consistente con escaleras mecanicas/fijas reales de metro.
+    """
+    tb = doc_a_blender_pos(*top_doc)      # (bx, by, bz) del punto alto
+    bb = doc_a_blender_pos(*bottom_doc)   # del punto bajo
+    cx = (tb[0] + bb[0]) / 2.0
+    cy = (tb[1] + bb[1]) / 2.0
+    cz = (tb[2] + bb[2]) / 2.0
+
+    # Direccion en Blender (esta en el plano Y-Z, x=0 porque ambos comparten X)
+    dy = bb[1] - tb[1]
+    dz = bb[2] - tb[2]
+    largo = math.sqrt(dy * dy + dz * dz)
+    ang = math.atan2(dz, dy)   # rotacion alrededor de Blender X
+
+    # Normal "hacia arriba" de la superficie (perpendicular a la direccion,
+    # en el plano Y-Z): rotar la direccion +90deg. Bajamos el centro medio
+    # espesor por esta normal para que la cara superior toque la linea.
+    nz = math.cos(ang)     # componente Z de la normal-arriba
+    ny = -math.sin(ang)    # componente Y de la normal-arriba
+    cy -= (espesor / 2.0) * ny
+    cz -= (espesor / 2.0) * nz
+
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=(cx, cy, cz))
+    obj = bpy.context.active_object
+    obj.name = nombre
+    obj.data.name = nombre + "_Mesh"
+    obj.scale = (ancho, largo, espesor)
+    obj.rotation_euler = (ang, 0.0, 0.0)
+
+    bpy.ops.object.select_all(action='DESELECT')
+    obj.select_set(True)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.transform_apply(location=False, rotation=True, scale=True)
 
     for col in obj.users_collection:
         col.objects.unlink(obj)
@@ -143,31 +196,28 @@ def generar():
     crear_caja("BLOCK_Local_Comercial", col_blockout,
                pos_doc=(7, 1.1, 3), size_doc=(2.5, 2.2, 2))
 
-    # --- Escaleras hacia Anden_A / L1 (2 tramos, caida -5.0m [ESTIMADO]) ---
-    # NOTA: escaleras mecanicas reales confirmadas en fuentes, pero su
-    # geometria/dimension exacta NO -- pendiente de foto en persona.
-    crear_caja("BLOCK_Escalera_Tramo1", col_blockout,
-               pos_doc=(0, -1.25, 16), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_Descanso", col_blockout,
-               pos_doc=(0, -2.5, 19), size_doc=(4, 0.2, 2))
-    crear_caja("BLOCK_Escalera_Tramo2", col_blockout,
-               pos_doc=(0, -3.75, 21), size_doc=(4, 2.5, 4))
+    # --- Escalera hacia Anden_A / L1 -- RAMPA CONTINUA ---------------------
+    # CORRECCION v2 (rework de circulacion): la v1 usaba cajas planas
+    # apiladas (Tramo1/Descanso/Tramo2/Conexion) que en realidad NO eran
+    # rampas: dejaban caidas verticales de ~2.4m entre cada escalon y, peor,
+    # un HUECO de 1.5m entre el borde del piso del Hall (Z=12.5) y el primer
+    # escalon (Z=14). Como el Anden L1 esta desplazado al sur (empieza en
+    # Z=23 mundo), bajo ese hueco no hay piso: el jugador caia al vacio
+    # (Y=-875 observado). Se reemplaza por una rampa inclinada continua del
+    # borde del Hall (Y=0.1, Z=12.5) al inicio del anden (Y=-4.9, Z=22.5),
+    # ~26.6 grados, caminable de bajada y de subida sin fisica brusca. El
+    # descanso final plano solapa el piso del anden para garantizar union.
+    crear_rampa("BLOCK_Rampa_AndenA", col_blockout,
+                top_doc=(0, 0.1, 12.5), bottom_doc=(0, -4.9, 22.5), ancho=4)
     crear_caja("BLOCK_Conexion_AndenA", col_blockout,
-               pos_doc=(0, -5.0, 23), size_doc=(4, 0.2, 1))
+               pos_doc=(0, -5.05, 23), size_doc=(4, 0.3, 2))
 
-    # --- Segunda escalera, hacia Anden_B (sentido opuesto) -----------------
-    # Agregada tras la correccion de topologia del Anden L1 (v3): cada
-    # anden lateral requiere su propia escalera de bajada, sin cruce a
-    # nivel de piso. Misma caida (-5.0m), desplazada a X=14 para alinear
-    # con el centro real de Anden_B.
-    crear_caja("BLOCK_Escalera_TramoB1", col_blockout,
-               pos_doc=(14, -1.25, 16), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_DescansoB", col_blockout,
-               pos_doc=(14, -2.5, 19), size_doc=(4, 0.2, 2))
-    crear_caja("BLOCK_Escalera_TramoB2", col_blockout,
-               pos_doc=(14, -3.75, 21), size_doc=(4, 2.5, 4))
+    # --- Escalera hacia Anden_B -- RAMPA CONTINUA (sentido opuesto) --------
+    # Mismo rework. Alineada con el centro real de Anden_B (X=14).
+    crear_rampa("BLOCK_Rampa_AndenB", col_blockout,
+                top_doc=(14, 0.1, 12.5), bottom_doc=(14, -4.9, 22.5), ancho=4)
     crear_caja("BLOCK_Conexion_AndenB", col_blockout,
-               pos_doc=(14, -5.0, 23), size_doc=(4, 0.2, 1))
+               pos_doc=(14, -5.05, 23), size_doc=(4, 0.3, 2))
 
     # --- Bifurcacion y descenso hacia Anden L5 ([ESTIMADO]) ----------------
     # CORRECCION: en la v1, Pasillo_L5 y Escalera_L5 se modelaron como
@@ -190,21 +240,20 @@ def generar():
     crear_caja("BLOCK_Pasillo_L5_Muro_Este", col_blockout,
                pos_doc=(22, 2, 4), size_doc=(0.2, 4, 8))
 
-    # Escalera L5: 4 tramos de 2.5m + 3 descansos, Z=8 a Z=30, hasta Y=-10
-    crear_caja("BLOCK_Escalera_L5_Tramo1", col_blockout,
-               pos_doc=(20, -1.25, 10), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_Escalera_L5_Descanso1", col_blockout,
-               pos_doc=(20, -2.5, 13), size_doc=(4, 0.2, 2))
-    crear_caja("BLOCK_Escalera_L5_Tramo2", col_blockout,
-               pos_doc=(20, -3.75, 16), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_Escalera_L5_Descanso2", col_blockout,
-               pos_doc=(20, -5.0, 19), size_doc=(4, 0.2, 2))
-    crear_caja("BLOCK_Escalera_L5_Tramo3", col_blockout,
-               pos_doc=(20, -6.25, 22), size_doc=(4, 2.5, 4))
-    crear_caja("BLOCK_Escalera_L5_Descanso3", col_blockout,
-               pos_doc=(20, -7.5, 25), size_doc=(4, 0.2, 2))
-    crear_caja("BLOCK_Escalera_L5_Tramo4", col_blockout,
-               pos_doc=(20, -8.75, 28), size_doc=(4, 2.5, 4))
+    # Escalera L5 -- 2 RAMPAS continuas + descanso intermedio (rework).
+    # Antes eran 4 cajas planas apiladas (mismo defecto que Anden_A/B:
+    # caidas verticales de 2.4m escalon a escalon). El descenso real de
+    # una estacion profunda (L5, tuneladora 1997) se hace con tramos de
+    # escalera mecanica larga con descanso; se modela como 2 rampas de 5m
+    # de caida cada una con un descanso plano intermedio a Y=-5.
+    crear_rampa("BLOCK_Rampa_L5_1", col_blockout,
+                top_doc=(20, 0.0, 8), bottom_doc=(20, -5.0, 18), ancho=4)
+    crear_caja("BLOCK_Descanso_L5", col_blockout,
+               pos_doc=(20, -5.15, 19), size_doc=(4, 0.3, 2))
+    crear_rampa("BLOCK_Rampa_L5_2", col_blockout,
+                top_doc=(20, -5.0, 20), bottom_doc=(20, -9.9, 30), ancho=4)
+    crear_caja("BLOCK_Conexion_AndenL5", col_blockout,
+               pos_doc=(20, -10.05, 30.5), size_doc=(4, 0.3, 2))
 
     # --- Anden L5 (60m, perfil moderno -- ver seccion 0 del doc) -----------
     # Reubicado de Z=20 (centro) a Z=60 (centro), es decir Z=30 a Z=90,

@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://bx3vjt123dbhf"]
+
+[ext_resource type="Texture2D" uid="uid://djlfevded34mt" path="res://assets/textures/ladrillo_terracota/Bricks097_1K-JPG_Color.jpg" id="1_k7t4e"]
+[ext_resource type="Texture2D" uid="uid://cmqb5fih4v4p5" path="res://assets/textures/ladrillo_terracota/Bricks097_1K-JPG_NormalGL.jpg" id="2_7jdc5"]
+[ext_resource type="Texture2D" uid="uid://dbhobqlej05ke" path="res://assets/textures/ladrillo_terracota/Bricks097_1K-JPG_Roughness.jpg" id="3_1phwr"]
+
+[resource]
+albedo_texture = ExtResource("1_k7t4e")
+roughness_texture = ExtResource("3_1phwr")
+normal_enabled = true
+normal_texture = ExtResource("2_7jdc5")
+uv1_scale = Vector3(0.5, 0.5, 0.5)
+uv1_triplanar = true
+uv1_world_triplanar = true

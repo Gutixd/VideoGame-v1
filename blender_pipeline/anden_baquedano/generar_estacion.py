@@ -560,14 +560,22 @@ def generar():
                        pos_doc=(centro_via + signo * GALGA, 0.05, 0),
                        size_doc=(0.1, 0.15, LARGO_ESTACION), material=mat_riel)
 
-    # --- Columnas CILINDRICAS: una fila por anden (corregido: v1/v2 tenian
-    # una sola fila central, asumiendo anden unico) --------------------------
+    # --- Columnas CILINDRICAS: una fila por anden ---------------------------
+    # CORRECCION (rework circulacion): antes iban al CENTRO de cada anden
+    # (X=0 y X=14), justo donde aterriza la escalera del Hall -> la primera
+    # columna bloqueaba el pie de la escalera y el jugador no podia entrar/
+    # salir del anden. Se corren 1m contra el muro exterior de cada anden
+    # (patron real de anden lateral: columnas junto al paramento, promenade
+    # central despejada), dejando libre el eje X=0 / X=14 por donde baja la
+    # escalera y camina el jugador.
+    X_COLUMNAS_ANDEN_A = X_MURO_OESTE_ANDEN_A + 1.0   # 1m del muro oeste
+    X_COLUMNAS_ANDEN_B = X_MURO_ESTE_ANDEN_B - 1.0    # 1m del muro este
     for i, z in enumerate(POSICIONES_COLUMNAS, start=1):
         crear_cilindro(f"Columna_AndenA_{i:02d}", col_arquitectura,
-                        pos_doc=(X_ANDEN_A_CENTRO, ALTURA_ARRANQUE / 2, z), radio=0.35,
+                        pos_doc=(X_COLUMNAS_ANDEN_A, ALTURA_ARRANQUE / 2, z), radio=0.35,
                         alto_doc=ALTURA_ARRANQUE, material=mat_columna_ladrillo, vertices=16)
         crear_cilindro(f"Columna_AndenB_{i:02d}", col_arquitectura,
-                        pos_doc=(X_ANDEN_B_CENTRO, ALTURA_ARRANQUE / 2, z), radio=0.35,
+                        pos_doc=(X_COLUMNAS_ANDEN_B, ALTURA_ARRANQUE / 2, z), radio=0.35,
                         alto_doc=ALTURA_ARRANQUE, material=mat_columna_ladrillo, vertices=16)
 
     # --- Caseta de control (en Anden_A, posicion original) -------------------

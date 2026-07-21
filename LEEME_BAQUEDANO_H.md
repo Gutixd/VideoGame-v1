@@ -32,7 +32,7 @@ blender_pipeline/METRO_BAQUEDANO_H/Metro_Baquedano_H.blend
 2. **La primera vez**, Godot reimporta el `.blend`. Para eso necesita saber dónde está Blender:
    - `Editor` → `Editor Settings` → `FileSystem` → `Import` → `Blender`
    - Activa **Blender 3 Path** y apunta a la carpeta de tu instalación de Blender
-     (ej. `C:\Program Files\Blender Foundation\Blender 5.1`). Reinicia Godot si lo pide.
+	 (ej. `C:\Program Files\Blender Foundation\Blender 5.1`). Reinicia Godot si lo pide.
 3. En el panel *FileSystem*, abre la escena:
    ```
    scenes/metro_baquedano_h.tscn

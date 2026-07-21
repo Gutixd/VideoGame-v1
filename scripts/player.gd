@@ -1,13 +1,18 @@
 extends CharacterBody3D
 
-const SPEED = 10.5
-const SPRINT_SPEED = 60.0
-const JUMP_VELOCITY = 20.8
-const GRAVITY = 9.8
+const SPEED = 6.5
+const SPRINT_SPEED = 12.0
+const JUMP_VELOCITY = 6.5
+const GRAVITY = 22.0
 const MOUSE_SENSITIVITY = 0.003
 const BOB_FREQ = 2.0
 const BOB_AMP = 0.08
 const FLASHLIGHT_BATTERY_MAX = 180.0
+
+const STAMINA_MAX = 100.0
+const STAMINA_DRAIN_RATE = 25.0
+const STAMINA_REGEN_RATE = 18.0
+const STAMINA_REGEN_UMBRAL = 25.0
 
 # Combate
 const MAX_VIDA = 100.0
@@ -24,12 +29,15 @@ var bob_time = 0.0
 var camera_base_pos: Vector3
 var flashlight_battery = FLASHLIGHT_BATTERY_MAX
 var flashlight_active = true
+var stamina = STAMINA_MAX
+var _stamina_agotada = false
 
 # Combate
 var vida = MAX_VIDA
 var balas = MAX_BALAS
 var _cd_disparo = 0.0
 var muzzle: Node3D = null
+var _spawn_transform: Transform3D
 
 func _ready():
 	# Rampas de las escaleras del metro: snap alto para que el jugador no
@@ -43,10 +51,23 @@ func _ready():
 	flashlight_timer.wait_time = 1.0
 	flashlight_timer.timeout.connect(_on_flashlight_tick)
 	flashlight_timer.start()
+	await get_tree().physics_frame
+	_snap_a_piso()
+	_spawn_transform = global_transform
+
+func _snap_a_piso():
+	var espacio = get_world_3d().direct_space_state
+	var origen = global_position + Vector3(0, 20.0, 0)
+	var destino = global_position - Vector3(0, 100.0, 0)
+	var query = PhysicsRayQueryParameters3D.create(origen, destino)
+	query.exclude = [self]
+	var hit = espacio.intersect_ray(query)
+	if hit:
+		global_position = hit.position + Vector3(0, 1.0, 0)
+		velocity = Vector3.ZERO
 
 func _physics_process(delta):
 	_handle_movement(delta)
-	_handle_camera_look(delta)
 	_handle_camera_bob(delta)
 	_handle_flashlight_toggle()
 	_handle_interaction()
@@ -110,8 +131,9 @@ func recibir_dano(cantidad: float):
 		_morir()
 
 func _morir():
-	# Demo: reinicia vida (evita game-over duro en el sandbox)
-	vida = MAX_VIDA
+	var menu_muerte = get_node_or_null("DeathMenu")
+	if menu_muerte:
+		menu_muerte.mostrar()
 
 func recargar_full():
 	balas = MAX_BALAS
@@ -126,9 +148,21 @@ func get_health_percent() -> float:
 	return vida / MAX_VIDA
 
 func _handle_movement(delta):
-	var current_speed = SPRINT_SPEED if Input.is_action_pressed("sprint") else SPEED
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+	var quiere_correr = Input.is_action_pressed("sprint") and direction and not _stamina_agotada and stamina > 0.0
+	var current_speed = SPEED
+
+	if quiere_correr:
+		current_speed = SPRINT_SPEED
+		stamina = max(0.0, stamina - STAMINA_DRAIN_RATE * delta)
+		if stamina <= 0.0:
+			_stamina_agotada = true
+	else:
+		stamina = min(STAMINA_MAX, stamina + STAMINA_REGEN_RATE * delta)
+		if _stamina_agotada and stamina >= STAMINA_REGEN_UMBRAL:
+			_stamina_agotada = false
 
 	if direction:
 		velocity.x = direction.x * current_speed
@@ -145,12 +179,13 @@ func _handle_movement(delta):
 	else:
 		velocity.y -= GRAVITY * delta
 
-func _handle_camera_look(_delta):
-	if Input.is_action_just_pressed("ui_cancel"):
-		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		else:
-			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+func respawn():
+	velocity = Vector3.ZERO
+	global_transform = _spawn_transform
+	vida = MAX_VIDA
+	balas = MAX_BALAS
+	stamina = STAMINA_MAX
+	_stamina_agotada = false
 
 func _input(event):
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -204,6 +239,9 @@ func add_battery(amount: float):
 
 func get_battery_percent() -> float:
 	return flashlight_battery / FLASHLIGHT_BATTERY_MAX
+
+func get_stamina_percent() -> float:
+	return stamina / STAMINA_MAX
 
 func get_interaction_prompt() -> String:
 	if camera == null:

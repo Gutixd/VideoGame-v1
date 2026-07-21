@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cj8fc5lwc4grf"
-path.s3tc="res://.godot/imported/Metal063_1K-JPG_Roughness.jpg-3a8b19c81b6da9bccfa078989bf264e2.s3tc.ctex"
+uid="uid://boe3moxghoxaj"
+path.s3tc="res://.godot/imported/azulejo_limpio.png-8709d9a187525d8f8af6e54ee7689cc8.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/textures/metal_oxidado/Metal063_1K-JPG_Roughness.jpg"
-dest_files=["res://.godot/imported/Metal063_1K-JPG_Roughness.jpg-3a8b19c81b6da9bccfa078989bf264e2.s3tc.ctex"]
+source_file="res://assets/textures/azulejo_metro_h/azulejo_limpio.png"
+dest_files=["res://.godot/imported/azulejo_limpio.png-8709d9a187525d8f8af6e54ee7689cc8.s3tc.ctex"]
 
 [params]
 

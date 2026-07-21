@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://c5ihi4nalu1st" path="res://assets/models/player_viewmodel/pistola.glb" id="3_xuky0"]
 [ext_resource type="Script" uid="uid://baop6sluctpng" path="res://scripts/inventory.gd" id="5_k2lan"]
 [ext_resource type="Script" uid="uid://da44iineayim6" path="res://scripts/player.gd" id="Script_player"]
+[ext_resource type="Script" path="res://scripts/pause_menu.gd" id="6_pausemenu"]
+[ext_resource type="Script" path="res://scripts/death_menu.gd" id="7_deathmenu"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_o7xvg"]
 radius = 0.4
@@ -39,3 +41,9 @@ script = ExtResource("3_la1j2")
 
 [node name="Inventario" type="CanvasLayer" parent="." unique_id=1435061338]
 script = ExtResource("5_k2lan")
+
+[node name="PauseMenu" type="CanvasLayer" parent="."]
+script = ExtResource("6_pausemenu")
+
+[node name="DeathMenu" type="CanvasLayer" parent="."]
+script = ExtResource("7_deathmenu")

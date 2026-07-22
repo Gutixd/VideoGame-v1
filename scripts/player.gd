@@ -14,6 +14,11 @@ const STAMINA_DRAIN_RATE = 25.0
 const STAMINA_REGEN_RATE = 18.0
 const STAMINA_REGEN_UMBRAL = 25.0
 
+# El cuerpo visible solo se muestra mirando bien hacia abajo (piernas/pies);
+# mirando al frente la camara queda tan pegada al torso que tapa la vista
+# (piso, sillas, etc.), asi que se oculta en ese caso.
+const UMBRAL_MIRAR_ABAJO = -0.35
+
 # Combate
 const MAX_VIDA = 100.0
 const MAX_BALAS = 100
@@ -24,6 +29,7 @@ const CADENCIA_DISPARO = 0.16
 @onready var camera = $Camera3D
 @onready var flashlight = $Camera3D/SpotLight3D
 @onready var flashlight_timer = $FlashlightTimer
+@onready var cuerpo = $CuerpoJugador
 
 var bob_time = 0.0
 var camera_base_pos: Vector3
@@ -61,6 +67,10 @@ func _snap_a_piso():
 	var destino = global_position - Vector3(0, 100.0, 0)
 	var query = PhysicsRayQueryParameters3D.create(origen, destino)
 	query.exclude = [self]
+	# Capa 1 = piso/paredes normales, capa 2 = techos. Si se detectaran
+	# techos aca, el jugador podria terminar "aparecido" encima de un techo
+	# en vez de sobre el piso real (justo el bug que paso con el del tren).
+	query.collision_mask = 1
 	var hit = espacio.intersect_ray(query)
 	if hit:
 		global_position = hit.position + Vector3(0, 1.0, 0)
@@ -131,6 +141,8 @@ func recibir_dano(cantidad: float):
 		_morir()
 
 func _morir():
+	if cuerpo:
+		cuerpo.reproducir_morir()
 	var menu_muerte = get_node_or_null("DeathMenu")
 	if menu_muerte:
 		menu_muerte.mostrar()
@@ -171,6 +183,8 @@ func _handle_movement(delta):
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)
 
+	_actualizar_animacion_cuerpo(direction, quiere_correr)
+
 	if is_on_floor():
 		if Input.is_action_just_pressed("jump"):
 			velocity.y = JUMP_VELOCITY
@@ -178,6 +192,17 @@ func _handle_movement(delta):
 			velocity.y = 0.0
 	else:
 		velocity.y -= GRAVITY * delta
+
+func _actualizar_animacion_cuerpo(direction: Vector3, corriendo: bool):
+	if cuerpo == null or vida <= 0.0:
+		return
+	if direction:
+		if corriendo:
+			cuerpo.reproducir_correr()
+		else:
+			cuerpo.reproducir_caminar()
+	else:
+		cuerpo.detener()
 
 func respawn():
 	velocity = Vector3.ZERO
@@ -194,8 +219,18 @@ func _input(event):
 		camera.rotation.x = clamp(camera.rotation.x, -PI/2, PI/2)
 
 func _handle_camera_bob(delta):
+	# Si el cuerpo visible tiene el hueso de los ojos, la camara lo sigue en
+	# tiempo real (asi el vaivan de la animacion de caminar/correr no
+	# desincroniza la vista -- antes la camara quedaba fija y la cabeza
+	# animada se "escapaba" de su posicion, viendose distorsionado).
+	if cuerpo and cuerpo.ancla_cabeza:
+		camera.global_position = cuerpo.ancla_cabeza.global_position
+		cuerpo.visible = camera.rotation.x < UMBRAL_MIRAR_ABAJO
+		return
+
+	# Respaldo (sin cuerpo visible aun): balanceo manual con acumulador acotado.
 	if velocity.length() > 0.1:
-		bob_time += delta * BOB_FREQ
+		bob_time = fmod(bob_time + delta * BOB_FREQ, 2.0)
 	else:
 		bob_time = 0.0
 

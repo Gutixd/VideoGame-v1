@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const ESCENA_JUEGO := "res://scenes/metro_baquedano_h.tscn"
+const ESCENA_JUEGO := "res://scenes/tren_demo.tscn"
 
 
 func _ready():

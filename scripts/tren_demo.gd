@@ -5,7 +5,7 @@ const ENTRY_X       := 17.3    # puerta del coche del medio (donde esta el inter
 const TRAIN_START_X := 78.0    # desde donde entra el tren
 const DOOR_SLIDE    := 1.35    # cuanto corre cada hoja de puerta
 const FLOOR_Y       := 1.36    # altura del piso interior del tren
-const ARRIVAL_TIME  := 5.0
+const ARRIVAL_TIME  := 30.0
 
 var train: Node3D
 var door_nodes: Array[Node3D] = []
@@ -23,6 +23,7 @@ func _ready() -> void:
 	if train:
 		_collect_doors()
 		_build_train_floor()
+		_build_pared_tren()
 		_build_entry_area()
 	_build_lights()
 	_build_player()
@@ -59,7 +60,7 @@ func _mat(color: Color, emissive := false) -> StandardMaterial3D:
 
 
 func _box(parent: Node, nm: String, size: Vector3, pos: Vector3, color: Color,
-		  with_body := true, emissive := false) -> Node3D:
+		  with_body := true, emissive := false, collision_layer := 1) -> Node3D:
 	var holder := Node3D.new()
 	holder.name = nm
 	holder.position = pos
@@ -74,6 +75,8 @@ func _box(parent: Node, nm: String, size: Vector3, pos: Vector3, color: Color,
 
 	if with_body:
 		var sb := StaticBody3D.new()
+		sb.collision_layer = collision_layer
+		sb.collision_mask = 0
 		var cs := CollisionShape3D.new()
 		var shape := BoxShape3D.new()
 		shape.size = size
@@ -97,9 +100,9 @@ func _build_environment() -> void:
 
 
 func _load_model() -> void:
-	var packed: Resource = load("res://models/metro.glb")
+	var packed: Resource = load("res://assets/models/tren/metro.glb")
 	if packed == null:
-		push_error("No se pudo cargar res://models/metro.glb")
+		push_error("No se pudo cargar res://assets/models/tren/metro.glb")
 		return
 	var scene: Node = packed.instantiate()
 	scene.name = "MetroModelo"
@@ -119,7 +122,32 @@ func _collect_doors() -> void:
 			if n3.position.z > 0.5:
 				door_nodes.append(n3)
 				door_base_x.append(n3.position.x)
+				_agregar_colision_puerta(n3)
 	print("Puertas encontradas (lado anden): ", door_nodes.size())
+
+
+func _agregar_colision_puerta(puerta: Node3D) -> void:
+	# Colision pegada a la puerta misma (hija de ella): al abrirse/cerrarse
+	# con el tween, la colision se mueve exactamente igual que la hoja
+	# visible -- bloquea el paso cuando esta cerrada, se despeja cuando se
+	# desliza abierta. El .glb no trae colision propia, hay que crearla.
+	_colision_invisible(puerta, Vector3(1.40, 1.85, 0.05), Vector3.ZERO)
+
+
+func _colision_invisible(parent: Node, size: Vector3, pos: Vector3) -> void:
+	# Solo fisica, sin malla visible (el modelo del tren ya tiene su propia
+	# pared visual en el .glb -- si aca se dibujara otra caja encima quedaria
+	# parpadeando/duplicada sobre la misma superficie).
+	var sb := StaticBody3D.new()
+	sb.position = pos
+	sb.collision_layer = 1
+	sb.collision_mask = 0
+	var cs := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = size
+	cs.shape = shape
+	sb.add_child(cs)
+	parent.add_child(sb)
 
 
 func _build_platform() -> void:
@@ -129,6 +157,57 @@ func _build_platform() -> void:
 	# Linea amarilla de seguridad
 	_box(self, "LineaAmarilla", Vector3(140, 0.02, 0.4), Vector3(12, FLOOR_Y + 0.01, 2.6),
 		 Color(0.95, 0.76, 0.05), false, true)
+	# Piso de la via (bajo el tren): el modelo del .glb es solo visual, sin
+	# colision fisica -- sin esto el jugador atraviesa el piso bajo el metro
+	# y cae al vacio. Queda mas abajo que el anden, como el desnivel real.
+	_box(self, "Via", Vector3(140, 0.2, 5.0), Vector3(12, FLOOR_Y - 0.9, -0.2),
+		 Color(0.05, 0.05, 0.06))
+	# Muro trasero del anden (lado contrario a la via): igual que la via,
+	# en el .glb es solo visual -- sin colision el jugador caminaba hasta
+	# el borde de atras y se caia. Bloquea el paso ahi.
+	_box(self, "MuroAnden", Vector3(140, 3.0, 0.3), Vector3(12, FLOOR_Y + 1.35, 8.35),
+		 Color(0.75, 0.72, 0.68))
+	# Muro del otro lado de la via (detras del tren): tambien solo visual
+	# en el .glb, se completa aca.
+	_box(self, "MuroLejano", Vector3(140, 6.0, 0.3), Vector3(12, FLOOR_Y + 2.85, -3.0),
+		 Color(0.64, 0.56, 0.44))
+	# Techo del tunel/anden. Capa 2: para que el raycast de "aparecer sobre
+	# el piso" (capa 1 solamente) no lo confunda con el suelo real.
+	_box(self, "Techo", Vector3(140, 0.4, 14.0), Vector3(12, FLOOR_Y + 6.9, 1.0),
+		 Color(0.03, 0.03, 0.035), true, false, 2)
+
+
+func _build_pared_tren() -> void:
+	# Colision del costado del tren que da al anden: solida entre puertas,
+	# con un hueco exacto en cada puerta para poder entrar. El .glb del
+	# tren no trae colision propia -- antes se podia atravesar el costado
+	# entero del vagon por cualquier parte, no solo por las puertas.
+	if door_base_x.is_empty():
+		return
+	var z_pared: float = door_nodes[0].position.z
+	var xs: Array = door_base_x.duplicate()
+	xs.sort()
+	var unicos: Array = []
+	for x in xs:
+		if unicos.is_empty() or x - unicos[-1] > 0.3:
+			unicos.append(x)
+	var ancho_hueco := 1.6
+	for i in range(unicos.size() - 1):
+		var izq: float = unicos[i] + ancho_hueco / 2.0
+		var der: float = unicos[i + 1] - ancho_hueco / 2.0
+		var ancho: float = der - izq
+		if ancho <= 0.1:
+			continue
+		var centro: float = (izq + der) / 2.0
+		_colision_invisible(train, Vector3(ancho, 1.85, 0.05), Vector3(centro, 2.2, z_pared))
+	# Tapas en los extremos, antes de la primera puerta y despues de la ultima.
+	_colision_invisible(train, Vector3(2.0, 1.85, 0.05),
+		 Vector3(unicos[0] - ancho_hueco / 2.0 - 1.0, 2.2, z_pared))
+	_colision_invisible(train, Vector3(2.0, 1.85, 0.05),
+		 Vector3(unicos[-1] + ancho_hueco / 2.0 + 1.0, 2.2, z_pared))
+	# Mampara de la cabina (coche lider): solo tenia malla visual, sin
+	# colision se podia atravesar y entrar caminando a la cabina.
+	_colision_invisible(train, Vector3(0.15, 2.10, 2.50), Vector3(39.9, 2.30, 0))
 
 
 func _build_train_floor() -> void:
@@ -173,26 +252,12 @@ func _build_lights() -> void:
 
 
 func _build_player() -> void:
-	player = CharacterBody3D.new()
-	player.name = "Jugador"
-	player.set_script(load("res://player.gd"))
-
-	var cs := CollisionShape3D.new()
-	var cap := CapsuleShape3D.new()
-	cap.radius = 0.35
-	cap.height = 1.7
-	cs.shape = cap
-	cs.position = Vector3(0, 0.85, 0)
-	player.add_child(cs)
-
-	var cam := Camera3D.new()
-	cam.name = "Camera3D"
-	cam.position = Vector3(0, 1.55, 0)
-	cam.fov = 75.0
-	player.add_child(cam)
-
-	# parado en el anden, mirando hacia el tren (-Z)
-	player.position = Vector3(ENTRY_X, FLOOR_Y + 0.5, 5.2)
+	# Jugador completo (salto, gravedad, stamina, vida, linterna, HUD, pausa, muerte)
+	var player_scene: PackedScene = load("res://blender_pipeline/METRO_BAQUEDANO_H/player.tscn")
+	player = player_scene.instantiate()
+	# parado en el anden, mirando hacia el tren (-Z); el propio player.gd se
+	# autoajusta al piso real con un raycast apenas entra en la escena.
+	player.position = Vector3(ENTRY_X, FLOOR_Y + 1.0, 5.2)
 	add_child(player)
 
 
@@ -211,7 +276,7 @@ func _build_hud() -> void:
 
 func _say(t: String) -> void:
 	if hud:
-		hud.text = t + "\n\n[WASD] moverse   [Mouse] mirar   [R] reiniciar   [ESC] cursor"
+		hud.text = t + "\n\n[WASD] moverse   [Mouse] mirar   [Shift] correr   [Espacio] saltar   [R] reiniciar   [ESC] pausa"
 
 
 func _input(event: InputEvent) -> void:

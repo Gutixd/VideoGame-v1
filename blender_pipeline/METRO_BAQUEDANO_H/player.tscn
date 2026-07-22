@@ -7,12 +7,14 @@
 [ext_resource type="Script" uid="uid://da44iineayim6" path="res://scripts/player.gd" id="Script_player"]
 [ext_resource type="Script" path="res://scripts/pause_menu.gd" id="6_pausemenu"]
 [ext_resource type="Script" path="res://scripts/death_menu.gd" id="7_deathmenu"]
+[ext_resource type="Script" path="res://scripts/cuerpo_jugador.gd" id="8_cuerpo"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_o7xvg"]
 radius = 0.4
 height = 1.76
 
 [node name="Player" type="CharacterBody3D" unique_id=928479706 groups=["player"]]
+collision_mask = 3
 floor_max_angle = 0.9599311
 floor_snap_length = 1.0
 script = ExtResource("Script_player")
@@ -21,7 +23,7 @@ script = ExtResource("Script_player")
 shape = SubResource("CapsuleShape3D_o7xvg")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1738069695]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, -0.165)
 
 [node name="SpotLight3D" type="SpotLight3D" parent="Camera3D" unique_id=1152084626]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.13, -0.11, -0.35)
@@ -47,3 +49,7 @@ script = ExtResource("6_pausemenu")
 
 [node name="DeathMenu" type="CanvasLayer" parent="."]
 script = ExtResource("7_deathmenu")
+
+[node name="CuerpoJugador" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, -1.0, 0)
+script = ExtResource("8_cuerpo")

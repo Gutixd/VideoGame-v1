@@ -20,6 +20,7 @@
 
 import bpy
 import bmesh
+import os
 from math import radians
 
 # ----------------------------------------------------------------------------
@@ -100,6 +101,64 @@ def mat_emit(name, color, strength=2.0):
     _MATS[name] = m
     return m
 
+def mat_azulejo(name, color_base, color_junta, escala=6.0, rough=0.35):
+    """Material de azulejo procedural (ladrillo/Brick texture): da variacion
+    de color y lineas de junta sin agregar ni un solo poligono extra."""
+    if name in _MATS:
+        return _MATS[name]
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.clear()
+    out  = nt.nodes.new('ShaderNodeOutputMaterial')
+    bsdf = nt.nodes.new('ShaderNodeBsdfPrincipled')
+    brick = nt.nodes.new('ShaderNodeTexBrick')
+    brick.inputs['Color1'].default_value = (*color_base, 1.0)
+    brick.inputs['Color2'].default_value = (
+        min(color_base[0] * 1.08, 1.0), min(color_base[1] * 1.08, 1.0), min(color_base[2] * 1.08, 1.0), 1.0)
+    brick.inputs['Mortar'].default_value = (*color_junta, 1.0)
+    brick.inputs['Scale'].default_value = escala
+    brick.inputs['Mortar Size'].default_value = 0.015
+    brick.inputs['Bias'].default_value = 0.0
+    brick.inputs['Brick Width'].default_value = 0.9
+    brick.inputs['Row Height'].default_value = 0.35
+    bsdf.inputs['Roughness'].default_value = rough
+    nt.links.new(brick.outputs['Color'], bsdf.inputs['Base Color'])
+    nt.links.new(bsdf.outputs['BSDF'], out.inputs['Surface'])
+    _MATS[name] = m
+    return m
+
+def mat_imagen(name, ruta_imagen, emision=0.0):
+    """Material con una imagen como textura (para publicidad, carteles, etc)."""
+    if name in _MATS:
+        return _MATS[name]
+    m = bpy.data.materials.new(name)
+    m.use_nodes = True
+    nt = m.node_tree
+    nt.nodes.clear()
+    out  = nt.nodes.new('ShaderNodeOutputMaterial')
+    bsdf = nt.nodes.new('ShaderNodeBsdfPrincipled')
+    tex = nt.nodes.new('ShaderNodeTexImage')
+    tex.image = bpy.data.images.load(ruta_imagen, check_existing=True)
+    uvmap_node = nt.nodes.new('ShaderNodeUVMap')
+    uvmap_node.uv_map = ''  # vacio = capa UV activa del objeto (evita
+                             # depender del nombre, que cambia segun idioma
+                             # de Blender: "UVMap" en ingles, "MapaUV" en es)
+    mapping = nt.nodes.new('ShaderNodeMapping')
+    mapping.inputs['Scale'].default_value = (-1.0, 1.0, 1.0)  # corrige espejado
+    mapping.inputs['Location'].default_value = (1.0, 0.0, 0.0)
+    nt.links.new(uvmap_node.outputs['UV'], mapping.inputs['Vector'])
+    nt.links.new(mapping.outputs['Vector'], tex.inputs['Vector'])
+    bsdf.inputs['Roughness'].default_value = 0.35
+    nt.links.new(tex.outputs['Color'], bsdf.inputs['Base Color'])
+    if emision > 0.0:
+        bsdf.inputs['Emission Color'].default_value = (1, 1, 1, 1)
+        bsdf.inputs['Emission Strength'].default_value = emision
+        nt.links.new(tex.outputs['Color'], bsdf.inputs['Emission Color'])
+    nt.links.new(bsdf.outputs['BSDF'], out.inputs['Surface'])
+    _MATS[name] = m
+    return m
+
 def box(name, dims, loc, mat=None, bevel=None, rot=None):
     """Crea un cubo con dimensiones reales en metros."""
     bpy.ops.mesh.primitive_cube_add(size=1.0, location=loc)
@@ -135,6 +194,31 @@ def _iter_fcurves(obj):
                     for fc in cb.fcurves:
                         yield fc
 
+def fijar_uv_frente(obj):
+    """Proyeccion cubica automatica de Blender, a la escala real del panel
+    (evita el mosaico repetido de usar cube_size=1 en un objeto mas grande)."""
+    tam = max(obj.dimensions.x, obj.dimensions.z)
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.uv.cube_project(cube_size=tam, correct_aspect=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+
+def cortar_hueco(obj, loc, size):
+    """Corta un hueco real (boolean) en obj -- para que al abrirse una
+    puerta se vea un hueco de verdad y no la carroceria solida detras."""
+    bpy.ops.mesh.primitive_cube_add(size=1.0, location=loc)
+    cutter = bpy.context.active_object
+    cutter.dimensions = size
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    mod = obj.modifiers.new('corte', 'BOOLEAN')
+    mod.operation = 'DIFFERENCE'
+    mod.object = cutter
+    mod.solver = 'EXACT'
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.modifier_apply(modifier=mod.name)
+    bpy.data.objects.remove(cutter, do_unlink=True)
+
 def cyl(name, radius, depth, loc, mat=None, rot=None, verts=20):
     bpy.ops.mesh.primitive_cylinder_add(radius=radius, depth=depth,
                                         location=loc, vertices=verts)
@@ -156,17 +240,36 @@ def build_car(cx, is_lead):
     m_gray  = mat_solid('gray',  GRAY,  0.1, 0.5)
     m_metal = mat_solid('metal', METAL, 0.8, 0.3)
 
-    # Cuerpo principal (teal, con cantos redondeados)
-    P.append(box("Cuerpo", (CAR_LEN, CAR_W, 2.20), (cx, 0, 2.40),
-                 m_teal, bevel=(0.16, 3)))
-    # Bajos oscuros
-    P.append(box("Bajos", (CAR_LEN, CAR_W + 0.02, 0.55), (cx, 0, 1.05), m_dark))
+    # Cuerpo principal (teal) -- SIN bisel todavia: hay que cortar los
+    # huecos de las puertas primero, el bisel se agrega despues.
+    cuerpo = box("Cuerpo", (CAR_LEN, CAR_W, 2.20), (cx, 0, 2.40), m_teal)
     # Banda negra de ventanas (envuelve el coche)
-    P.append(box("Banda", (CAR_LEN - 0.6, CAR_W + 0.05, 0.95), (cx, 0, 2.70), m_dark))
+    banda = box("Banda", (CAR_LEN - 0.6, CAR_W + 0.05, 0.95), (cx, 0, 2.70), m_dark)
 
-    # Ventanas y puertas en ambos costados
     door_x   = [-5.3, 0.0, 5.3]
     window_x = [-7.4, -2.65, 2.65, 7.4]
+
+    # Hueco real (boolean) en el cuerpo y la banda en cada puerta, en ambos
+    # costados -- sin esto, al abrirse la puerta se seguia viendo la
+    # carroceria solida detras en vez de un hueco de verdad.
+    for side in (-1, 1):
+        for dx in door_x:
+            cortar_hueco(cuerpo, (cx + dx, side * HALF_W, 2.20), (1.55, CAR_W + 0.4, 1.85))
+            cortar_hueco(banda, (cx + dx, side * HALF_W, 2.85), (1.30, CAR_W + 0.4, 0.75))
+
+    mdb = cuerpo.modifiers.new('bevel', 'BEVEL')
+    mdb.width = 0.16
+    mdb.segments = 3
+    mdb.limit_method = 'ANGLE'
+    P.append(cuerpo)
+    P.append(banda)
+
+    # Bajos oscuros
+    P.append(box("Bajos", (CAR_LEN, CAR_W + 0.02, 0.55), (cx, 0, 1.05), m_dark))
+
+    # Ventanas + puertas. Como ahora los 3 coches tienen interior real (piso,
+    # asientos, barras), el hueco de la puerta deja ver el interior de
+    # verdad -- no hace falta un panel oscuro falso detras.
     for side in (-1, 1):
         y = side * (HALF_W + 0.02)
         for wx in window_x:
@@ -228,7 +331,7 @@ def build_car(cx, is_lead):
 # ----------------------------------------------------------------------------
 #  INTERIOR (dentro de un coche)
 # ----------------------------------------------------------------------------
-def build_interior(cx):
+def build_interior(cx, sx_list=(-6, -3, 0, 3, 6)):
     P = []
     m_floor  = mat_solid('in_floor', (0.60, 0.60, 0.62))
     m_orange = mat_solid('asiento', ORANGE, 0.0, 0.4)
@@ -237,10 +340,10 @@ def build_interior(cx):
     P.append(box("In_Techo", (CAR_LEN - 0.5, CAR_W - 0.6, 0.08), (cx, 0, 3.34),
                  mat_emit('in_luz', (1.0, 0.95, 0.85), 1.4)))
     for side in (-1, 1):
-        for i, sx in enumerate((-6, -3, 0, 3, 6)):
+        for i, sx in enumerate(sx_list):
             P.append(box("Asiento", (1.2, 0.5, 0.10), (cx + sx, side * 0.85, 1.75), m_orange))
             P.append(box("Respaldo", (1.2, 0.1, 0.55), (cx + sx, side * 1.05, 2.05), m_orange))
-    for px in (-6, -3, 0, 3, 6):
+    for px in sx_list:
         P.append(cyl("Barra", 0.04, 2.0, (cx + px, 0, 2.35), m_metal))
     return P
 
@@ -279,23 +382,71 @@ def build_cab(cx):
 #  ESTACION + TUNEL
 # ----------------------------------------------------------------------------
 def build_station():
-    m_conc  = mat_solid('concreto', CONCRETE, 0.0, 0.7)
-    m_tile  = mat_solid('muro', TILE, 0.0, 0.6)
+    m_conc  = mat_azulejo('concreto', CONCRETE, (0.32, 0.30, 0.27), escala=10.0, rough=0.75)
+    m_tile  = mat_azulejo('muro', TILE, (0.20, 0.19, 0.18), escala=14.0, rough=0.35)
     m_yellow= mat_solid('amarillo', YELLOW, 0.0, 0.4)
     m_dark  = mat_solid('tunel', (0.03, 0.03, 0.035), 0.0, 0.8)
     m_metal = mat_solid('metal', METAL, 0.8, 0.3)
+    m_lampara = mat_solid('lampara_carcasa', (0.12, 0.12, 0.13), 0.6, 0.4)
+    m_lampara_luz = mat_emit('lampara_luz', (1.0, 0.95, 0.82), 4.0)
 
     # Anden (lado -Y, frente a las puertas)
     box("Anden", (90, 5.0, 1.0), (0, -5.2, 0.5), m_conc)
     box("LineaAmarilla", (90, 0.4, 0.02), (0, -2.85, 1.01), m_yellow)
+
+    # Franja de peligro (cinta amarilla/negra) justo en el borde real del
+    # anden, mas cerca de la via que la linea amarilla de seguridad.
+    m_peligro_negro = mat_solid('peligro_negro', (0.04, 0.04, 0.045), 0.0, 0.6)
+    FRANJA_Y = -2.72
+    FRANJA_ANCHO = 0.28
+    box("FranjaPeligroBase", (90, FRANJA_ANCHO, 0.015), (0, FRANJA_Y, 1.015), m_yellow)
+    paso_raya = 0.9
+    n_rayas = int(90 / paso_raya)
+    for i in range(n_rayas):
+        rx = -45 + i * paso_raya
+        box("RayaPeligro_%02d" % i, (0.20, FRANJA_ANCHO + 0.03, 0.02),
+            (rx, FRANJA_Y, 1.025), m_peligro_negro, rot=(0, 0, radians(35)))
     # Muro de la estacion (detras del tren, lado +Y)
     box("Muro", (90, 0.3, 6.5), (0, 3.4, 3.2), m_tile)
+    # Muro trasero del anden (lado -Y, detras del pasajero): antes no existia
+    # y se podia caminar hasta el borde y caer al vacio.
+    box("MuroAnden", (90, 0.3, 6.5), (0, -7.85, 3.2), m_tile)
+
+    # Franja roja de informacion (linea/estaciones), como en las estaciones
+    # reales, corriendo por todo el largo del anden en la parte alta del muro.
+    m_rojo = mat_solid('franja_roja', (0.72, 0.06, 0.05), 0.0, 0.5)
+    m_blanco = mat_solid('franja_blanco', (0.92, 0.92, 0.90), 0.0, 0.6)
+    box("FranjaRojaInfo", (90, 0.04, 0.55), (0, -7.68, 5.1), m_rojo)
+    box("FranjaRojaLinea", (90, 0.03, 0.05), (0, -7.66, 5.28), m_blanco)
+    box("FranjaRojaBorde", (90, 0.05, 0.06), (0, -7.67, 4.84), m_blanco)
+
+    # Cuadros de publicidad en el muro del anden (marco oscuro + panel con
+    # la imagen del aviso), varios repartidos a lo largo.
+    m_marco_pub = mat_solid('marco_publicidad', (0.08, 0.08, 0.09), 0.3, 0.5)
+    _base_dir_tren = os.path.dirname(os.path.abspath(__file__))
+    _repo_root_tren = os.path.abspath(os.path.join(_base_dir_tren, "..", ".."))
+    _ruta_volta = os.path.join(_repo_root_tren, "assets", "textures", "publicidad", "volta.png")
+    m_panel_pub = mat_imagen('panel_publicidad_volta', _ruta_volta, emision=0.6)
+    pub_x = [-29, -9, 9, 29]  # desplazadas 3m de las columnas para no toparse
+    for i, px in enumerate(pub_x):
+        box("MarcoPublicidad_%02d" % i, (3.2, 0.08, 2.0), (px, -7.65, 2.55), m_marco_pub)
+        panel = box("PanelPublicidad_%02d" % i, (2.9, 0.03, 1.7), (px, -7.60, 2.55), m_panel_pub)
+        fijar_uv_frente(panel)
     # Techo / boveda oscura
     box("Techo", (90, 14, 0.4), (0, -1.5, 6.6), m_dark)
-    # Cama de via
-    box("Via", (90, 5.5, 0.15), (0, 0, 0.05), m_dark)
+    # Cama de via (mas ancha y solida, rellena bien el hueco bajo el tren)
+    box("Via", (90, 5.6, 0.9), (0, 0, -0.4), m_dark)
     for ry in (-0.72, 0.72):
         box("Riel", (90, 0.10, 0.10), (0, ry, 0.12), m_metal)
+
+    # Carcasas de luces colgantes (antes las luces flotaban sin ningun
+    # soporte visible en el techo).
+    paso_luz = 6.0
+    n_luces = int(90 / paso_luz)
+    for i in range(n_luces):
+        lx = -45 + i * paso_luz + paso_luz / 2.0
+        box("LamparaCarcasa_%02d" % i, (1.2, 0.35, 0.12), (lx, -5.0, 6.35), m_lampara)
+        box("LamparaLuz_%02d" % i, (1.0, 0.15, 0.03), (lx, -5.0, 6.28), m_lampara_luz)
 
     # Cartel "SAN PABLO"
     box("CartelFondo", (3.2, 0.05, 0.7), (10, 3.24, 3.9), mat_solid('cartel', (0.75, 0.10, 0.10)))
@@ -375,14 +526,31 @@ def main():
     cxs = [i * -STEP + (N_COCHES - 1) * STEP for i in range(N_COCHES)]
     lead_cx = cxs[0]
     mid_cx  = cxs[len(cxs) // 2]
+    tail_cx = cxs[-1]
 
     for i, cx in enumerate(cxs):
         train_parts += build_car(cx, is_lead=(i == 0))
 
     if CONSTRUIR_INT:
+        # Interior en los 3 coches. En el coche lider se deja libre el
+        # extremo +X (hacia la nariz) para no encimar asientos con la cabina.
+        train_parts += build_interior(lead_cx, sx_list=(-6, -3, 0, 3))
         train_parts += build_interior(mid_cx)
+        if tail_cx != lead_cx and tail_cx != mid_cx:
+            train_parts += build_interior(tail_cx)
     if CONSTRUIR_CAB:
         train_parts += build_cab(lead_cx)
+    if CONSTRUIR_CAB and CONSTRUIR_INT:
+        # Mampara entre la cabina y el area de pasajeros del coche lider:
+        # sin esto la consola de la cabina queda flotando a la vista/al
+        # alcance en medio del pasillo.
+        m_mampara = mat_solid('mampara', DARK, 0.1, 0.5)
+        m_vidrio_cab = mat_solid('vidrio_cab', GLASS, 0.3, 0.1)
+        div_x = lead_cx + 5.3
+        train_parts.append(box("MamparaCabina", (0.10, CAR_W - 0.10, 2.10),
+                                (div_x, 0, 2.30), m_mampara))
+        train_parts.append(box("VentanaMampara", (0.06, 0.7, 0.6),
+                                (div_x, 0, 2.55), m_vidrio_cab))
 
     # Estacion (estatica, no se mueve con el tren)
     build_station()
@@ -401,6 +569,13 @@ def main():
     add_light("Luz_Anden", (0, -3, 7.0), 4000, 12)
     add_light("Luz_Frente", (lead_front + 9, -8, 6.0), 5000, 8)
     add_light("Luz_Relleno", (-15, -6, 6.0), 1500, 10)
+    # Una luz por cada carcasa de lampara colgante del anden.
+    paso_luz = 6.0
+    n_luces = int(90 / paso_luz)
+    for i in range(n_luces):
+        lx = -45 + i * paso_luz + paso_luz / 2.0
+        add_light("LuzLampara_%02d" % i, (lx, -5.0, 6.1), 350, 1.0,
+                  ltype='POINT')
 
     # Luces DENTRO del tren (se mueven con el, EEVEE no rebota la emision)
     if CONSTRUIR_INT:
@@ -451,3 +626,27 @@ def main():
 
 
 main()
+
+# ----------------------------------------------------------------------------
+#  GUARDAR + EXPORTAR (para poder correr headless: blender -b --python este.py)
+# ----------------------------------------------------------------------------
+import os as _os
+
+_base_dir = _os.path.dirname(_os.path.abspath(__file__))
+_blend_path = _os.path.join(_base_dir, "tren.blend")
+bpy.ops.wm.save_as_mainfile(filepath=_blend_path)
+
+_repo_root = _os.path.abspath(_os.path.join(_base_dir, "..", ".."))
+_out_dir = _os.path.join(_repo_root, "assets", "models", "tren")
+_os.makedirs(_out_dir, exist_ok=True)
+_glb_path = _os.path.join(_out_dir, "metro.glb")
+
+bpy.ops.object.select_all(action="SELECT")
+bpy.ops.export_scene.gltf(
+    filepath=_glb_path,
+    export_format="GLB",
+    use_selection=True,
+    export_yup=True,
+    export_apply=True,
+)
+print("Tren exportado a:", _glb_path)
